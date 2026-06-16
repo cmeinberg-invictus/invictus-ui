@@ -126,6 +126,9 @@
   --size-avatar-sm: 2rem;
   --size-avatar-md: 2.5rem;
   --size-avatar-chat: 2.75rem;
+  --size-sidebar-left-expanded: 18rem;
+  --size-sidebar-left-collapsed: 4.75rem;
+  --size-sidebar-right: 24rem;
 
   --elevation-1: 0 1px 2px rgb(37 24 56 / 7%);
   --elevation-2: 0 2px 5px rgb(37 24 56 / 10%);

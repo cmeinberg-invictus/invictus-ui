@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { RouterProvider } from 'react-router-dom'
-import { describe, expect, test } from 'vitest'
+import { beforeEach, describe, expect, test } from 'vitest'
 import { AppProviders } from './AppProviders'
 import { createTestRouter } from './router'
 
@@ -13,6 +13,10 @@ const renderRoute = (path: string) => {
     </AppProviders>,
   )
 }
+
+beforeEach(() => {
+  localStorage.clear()
+})
 
 describe('Verena SPA', () => {
   test('restores activity context from deep-link route', async () => {
@@ -32,6 +36,51 @@ describe('Verena SPA', () => {
     expect(screen.getByRole('link', { name: /^home$/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /^activities$/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /^artifacts$/i })).toBeInTheDocument()
+  })
+
+  test('collapses and expands desktop navigation while preserving core links', async () => {
+    const user = userEvent.setup()
+    renderRoute('/')
+
+    await user.click(await screen.findByRole('button', { name: /collapse navigation/i }))
+
+    expect(screen.getByRole('button', { name: /expand navigation/i })).toHaveAttribute('aria-expanded', 'false')
+    expect(screen.getByRole('link', { name: /^home$/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /^activities$/i })).toBeInTheDocument()
+    expect(localStorage.getItem('verena-left-nav-collapsed')).toBe('true')
+
+    await user.click(screen.getByRole('button', { name: /expand navigation/i }))
+
+    expect(screen.getByRole('button', { name: /collapse navigation/i })).toHaveAttribute('aria-expanded', 'true')
+    expect(localStorage.getItem('verena-left-nav-collapsed')).toBe('false')
+  })
+
+  test('toggles context panel without removing animated sidebar shell', async () => {
+    const user = userEvent.setup()
+    renderRoute('/activities/session-persistence')
+
+    await user.click(await screen.findByRole('button', { name: /hide context panel/i }))
+
+    expect(screen.getByRole('button', { name: /show context panel/i })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /hide context panel/i })).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /show context panel/i }))
+
+    expect(screen.getByRole('button', { name: /hide context panel/i })).toBeInTheDocument()
+  })
+
+  test('keeps mobile navigation mounted during exit animation', async () => {
+    const user = userEvent.setup()
+    renderRoute('/')
+
+    await user.click(await screen.findByRole('button', { name: /open navigation/i }))
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /close navigation/i }))
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
   })
 
   test('composer submit appends a new message', async () => {
