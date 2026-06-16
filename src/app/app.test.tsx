@@ -69,6 +69,32 @@ describe('Verena SPA', () => {
     expect(screen.getByRole('button', { name: /hide context panel/i })).toBeInTheDocument()
   })
 
+  test('collapses and expands context panel groups', async () => {
+    const user = userEvent.setup()
+    renderRoute('/activities/session-persistence')
+
+    const artifactsToggle = await screen.findByRole('button', { name: /artifacts/i })
+    const artifactsPanel = document.getElementById(artifactsToggle.getAttribute('aria-controls') ?? '')
+    const artifactLink = screen.getByRole('link', {
+      name: /pr notes: onboarding-storage-user-scope/i,
+    })
+
+    expect(artifactsPanel).toHaveAttribute('aria-hidden', 'false')
+    expect(artifactsToggle).toHaveAttribute('aria-expanded', 'true')
+    expect(artifactLink).toBeVisible()
+
+    await user.click(artifactsToggle)
+
+    expect(artifactsPanel).toHaveAttribute('aria-hidden', 'true')
+    expect(artifactsToggle).toHaveAttribute('aria-expanded', 'false')
+
+    await user.click(artifactsToggle)
+
+    expect(artifactsPanel).toHaveAttribute('aria-hidden', 'false')
+    expect(artifactsToggle).toHaveAttribute('aria-expanded', 'true')
+    expect(artifactLink).toBeVisible()
+  })
+
   test('keeps mobile navigation mounted during exit animation', async () => {
     const user = userEvent.setup()
     renderRoute('/')

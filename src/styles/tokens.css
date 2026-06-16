@@ -50,6 +50,9 @@
   --surface-border-strong: rgb(77 64 103 / 24%);
   --sidebar-gradient-start: #e9e2f1;
   --sidebar-gradient-end: #dfd7ea;
+  --context-group-background: #d6ccdf;
+  --context-group-background-hover: #ded4e8;
+  --context-group-item-background: #ece5f3;
   --topbar-shadow: 0 1px 0 rgb(255 255 255 / 70%);
   --sidebar-drop-shadow-right: 6px 0 14px rgb(37 24 56 / 6%);
   --sidebar-drop-shadow-left: -6px 0 14px rgb(37 24 56 / 6%);
@@ -200,6 +203,9 @@
   --surface-border-strong: rgb(202 196 208 / 22%);
   --sidebar-gradient-start: #2a2535;
   --sidebar-gradient-end: #181521;
+  --context-group-background: #14111d;
+  --context-group-background-hover: #1c1826;
+  --context-group-item-background: #211c2b;
   --topbar-shadow: 0 1px 0 rgb(255 255 255 / 10%);
   --sidebar-drop-shadow-right: 8px 0 24px rgb(0 0 0 / 14%);
   --sidebar-drop-shadow-left: -8px 0 24px rgb(0 0 0 / 14%);

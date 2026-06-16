@@ -1,17 +1,52 @@
 import { Badge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
 import { EmptyState } from '../../components/ui/EmptyState'
-import { Panel } from '../../components/ui/Panel'
 import { useAppState } from '../../store/AppStateProvider'
 
 type BackgroundTasksProps = {
   activityId: string | null
+  variant?: 'standalone' | 'embedded'
 }
 
-export function BackgroundTasks({ activityId }: BackgroundTasksProps) {
+export function BackgroundTasks({ activityId, variant = 'standalone' }: BackgroundTasksProps) {
   const { tasks, clearCompletedTasks } = useAppState()
 
   const filteredTasks = activityId ? tasks.filter((task) => task.activityId === activityId) : tasks
+
+  const taskContent = filteredTasks.length ? (
+    <div className="space-y-3">
+      {variant === 'embedded' ? (
+        <div className="flex justify-end">
+          <Button size="sm" variant="tertiary" onClick={clearCompletedTasks}>
+            Clear
+          </Button>
+        </div>
+      ) : null}
+      <ul className="space-y-2">
+        {filteredTasks.map((task) => (
+          <li
+            key={task.id}
+            className="rounded-xl border border-[color:var(--surface-border)] bg-[color:var(--context-group-item-background)] px-3 py-3 shadow-e1"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0 space-y-1">
+                <p className="text-body-md font-medium text-text">{task.title}</p>
+                <p className="text-label-md text-textMuted">{task.subtitle}</p>
+                <p className="text-label-md text-textMuted">{task.updatedAt}</p>
+              </div>
+              <Badge status={task.status} />
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ) : (
+    <EmptyState title="No background tasks" description="Running jobs will appear here." />
+  )
+
+  if (variant === 'embedded') {
+    return taskContent
+  }
 
   return (
     <section aria-labelledby="background-tasks-title" className="space-y-3">
@@ -24,24 +59,7 @@ export function BackgroundTasks({ activityId }: BackgroundTasksProps) {
         </Button>
       </header>
 
-      {filteredTasks.length ? (
-        <Panel className="overflow-hidden border-[color:var(--surface-border)] bg-surfaceContainerLow">
-          <ul className="divide-y divide-[color:var(--surface-border)]">
-          {filteredTasks.map((task) => (
-            <li key={task.id} className="space-y-1.5 px-4 py-3">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-body-md font-medium text-text">{task.title}</p>
-                  <Badge status={task.status} />
-                </div>
-                <p className="text-label-md text-textMuted">{task.subtitle}</p>
-                <p className="text-label-md text-textMuted">{task.updatedAt}</p>
-            </li>
-          ))}
-          </ul>
-        </Panel>
-      ) : (
-        <EmptyState title="No background tasks" description="Running jobs will appear here." />
-      )}
+      {taskContent}
     </section>
   )
 }
