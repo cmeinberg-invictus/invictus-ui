@@ -1,0 +1,124 @@
+---
+description: Product UI quality standards for frontend, design-system, accessibility, routing, and testing work
+globs:
+  - "**/*.{ts,tsx,js,jsx,css,scss,md,mdx,json}"
+  - "src/**"
+  - "app/**"
+  - "pages/**"
+  - "components/**"
+  - "design-system/**"
+  - "docs/standards/**"
+alwaysApply: false
+---
+
+# Product UI Quality Rule
+
+Follow the source-of-truth standard:
+
+`docs/standards/product-ui-quality-standards.md`
+
+Apply this rule when working on:
+
+- Frontend code
+- UI components
+- Design-system code
+- Page layouts
+- Forms
+- Tables
+- Search and filters
+- Navigation
+- Routing
+- SPA state
+- Accessibility
+- Content and terminology
+- Tests for UI behavior
+- Performance-sensitive product surfaces
+
+## Required Behavior
+
+Before making UI-related changes:
+
+1. Check whether an existing design-system token, component, or pattern already solves the problem.
+2. Prefer reuse over creating new components or one-off styles.
+3. Ensure the implementation supports responsive behavior.
+4. Ensure the implementation supports light and dark themes.
+5. Ensure interactive behavior is keyboard-accessible.
+6. Ensure meaningful state is deep-linkable when relevant.
+7. Ensure loading, empty, error, success, and permission states are handled where relevant.
+8. Add or update tests for critical behavior.
+9. Update documentation when introducing reusable patterns or components.
+
+## Design-System Expectations
+
+Use tokens for:
+
+- Color
+- Typography
+- Spacing
+- Radius
+- Elevation
+- Motion
+- Focus
+- Breakpoints
+- Theme values
+
+Do not hardcode design values when tokens exist.
+
+When adding or modifying reusable components, include:
+
+- States
+- Variants
+- Accessibility behavior
+- Keyboard behavior
+- Focus behavior
+- Responsive behavior
+- Light and dark theme behavior
+- Usage examples or documentation
+- Tests
+
+## Routing and SPA Expectations
+
+For routes, tabs, filters, selected objects, search params, pagination, and chat/message references:
+
+- Meaningful product state should be represented in the URL when relevant.
+- Shared URLs should restore the intended context.
+- Browser back and forward behavior should remain predictable.
+- Page titles, headings, breadcrumbs, navigation labels, and URLs should use consistent terminology.
+- Unauthorized or unavailable routes should provide useful recovery paths.
+
+## Accessibility Expectations
+
+Implement WCAG 2.2 AA expectations where applicable:
+
+- Semantic HTML
+- Keyboard navigation
+- Visible focus states
+- Accessible names and labels
+- Correct roles and descriptions
+- Sufficient contrast
+- Non-color-only communication
+- Accessible validation and errors
+- Correct focus management
+- Screen-reader-compatible dynamic updates
+
+## Testing Expectations
+
+Prioritize tests in this order:
+
+1. Critical E2E flows
+2. Component and integration tests for forms and key pages
+3. Accessibility tests
+4. Routing and deep-linking tests
+5. Unit tests for business logic
+6. Contract or schema validation
+7. Smoke tests
+8. Visual regression tests for high-impact UI
+9. Performance tests for performance-sensitive areas
+
+## Completion Rule
+
+Before marking work complete, check the relevant Definition of Done sections in:
+
+`docs/standards/product-ui-quality-standards.md`
+
+If a requirement cannot be met, document the exception clearly.
