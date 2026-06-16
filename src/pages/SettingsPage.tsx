@@ -8,7 +8,7 @@ export function SettingsPage() {
   return (
     <div className="space-y-4">
       <header>
-        <h1 className="text-2xl font-semibold text-text">User settings</h1>
+        <h1 className="text-3xl font-semibold text-text">User settings</h1>
         <p className="text-sm text-textMuted">Customize your Verena workspace preferences.</p>
       </header>
 

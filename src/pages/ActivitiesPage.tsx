@@ -18,7 +18,7 @@ export function ActivitiesPage() {
   return (
     <div className="space-y-4">
       <header>
-        <h1 className="text-2xl font-semibold text-text">Activities</h1>
+        <h1 className="text-3xl font-semibold text-text">Activities</h1>
         <p className="text-sm text-textMuted">Track and reopen your workspace sessions.</p>
       </header>
 
@@ -26,7 +26,7 @@ export function ActivitiesPage() {
         {activities.map((activity) => (
           <li key={activity.id}>
             <Panel className="p-4">
-              <Link to={`/activities/${activity.id}`} className="block rounded focus-visible:outline-none">
+              <Link to={`/activities/${activity.id}`} className="focus-brand block rounded-lg p-1">
                 <p className="text-sm font-semibold text-text">{activity.title}</p>
                 <p className="mt-1 text-sm text-textMuted">{activity.excerpt}</p>
                 <p className="mt-2 text-xs text-textMuted">Updated {activity.updatedAt}</p>

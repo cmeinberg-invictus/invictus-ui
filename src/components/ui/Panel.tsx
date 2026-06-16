@@ -7,7 +7,7 @@ export function Panel({ className, ...props }: PanelProps) {
   return (
     <div
       className={cn(
-        'rounded-xl border border-composerBorder bg-surface/92 shadow-panel backdrop-blur-md',
+        'rounded-xl border border-transparent bg-surfaceContainer shadow-e2',
         className,
       )}
       {...props}

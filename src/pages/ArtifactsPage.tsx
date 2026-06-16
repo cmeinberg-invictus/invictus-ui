@@ -18,14 +18,14 @@ export function ArtifactsPage() {
   return (
     <div className="space-y-4">
       <header>
-        <h1 className="text-2xl font-semibold text-text">Artifacts</h1>
+        <h1 className="text-3xl font-semibold text-text">Artifacts</h1>
         <p className="text-sm text-textMuted">Documents and outputs generated from activities.</p>
       </header>
       <ul className="space-y-3">
         {artifacts.map((artifact) => (
           <li key={artifact.id}>
             <Panel className="p-4">
-              <Link to={`/artifacts/${artifact.id}`} className="block rounded focus-visible:outline-none">
+              <Link to={`/artifacts/${artifact.id}`} className="focus-brand block rounded-lg p-1">
                 <p className="text-sm font-semibold text-text">{artifact.title}</p>
                 <p className="mt-1 text-xs uppercase tracking-wide text-textMuted">{artifact.type}</p>
                 <p className="mt-2 text-xs text-textMuted">Updated {artifact.updatedAt}</p>

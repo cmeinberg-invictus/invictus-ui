@@ -15,10 +15,13 @@ body,
 body {
   margin: 0;
   font-family: var(--font-sans);
-  background: var(--color-bg);
-  color: var(--color-text);
+  background: var(--color-background);
+  color: var(--color-on-surface);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  transition:
+    background-color var(--motion-duration-medium) var(--motion-easing-standard),
+    color var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 a {
@@ -28,42 +31,94 @@ a {
 
 .scroll-area {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border) transparent;
+  scrollbar-color: color-mix(in srgb, var(--color-outline) 50%, transparent) transparent;
 }
 
-.glass-surface {
-  background: var(--gradient-composer-surface);
-  border: 1px solid var(--color-composer-border);
-  box-shadow: var(--shadow-glass);
-  backdrop-filter: blur(14px);
+.scroll-area::-webkit-scrollbar {
+  width: 0.625rem;
+  height: 0.625rem;
 }
 
-.shell-fade-top {
-  background-image: var(--gradient-shell-top);
+.scroll-area::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-outline) 54%, transparent);
 }
 
-.chat-fade-top {
-  background-image: var(--gradient-chat-fade-top);
+.surface-container {
+  background: var(--color-surface-container);
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 75%, transparent);
+  box-shadow: var(--elevation-1);
 }
 
-.chat-fade-bottom {
-  background-image: var(--gradient-chat-fade-bottom);
+.surface-container-high {
+  background: var(--color-surface-container-high);
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 75%, transparent);
+  box-shadow: var(--elevation-2);
 }
 
-.chat-glass-input {
-  background-image: var(--gradient-composer-surface);
-  border: 1px solid var(--color-composer-border);
-  box-shadow: var(--shadow-glass);
+.surface-container-low {
+  background: var(--color-surface-container-low);
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 75%, transparent);
+  box-shadow: var(--elevation-1);
 }
 
-.message-agent {
-  background: var(--color-message-agent);
-  box-shadow: var(--shadow-bubble);
+.top-app-bar {
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-outline-variant) 72%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.app-stage {
+  background:
+    radial-gradient(
+      circle at top,
+      color-mix(in srgb, var(--color-primary) 14%, transparent) 0%,
+      transparent 46%
+    ),
+    var(--color-background);
+}
+
+.shell-sidebar-left {
+  background: linear-gradient(
+    180deg,
+    var(--color-surface-container-high) 0%,
+    var(--color-surface-container-low) 100%
+  );
+  border-right: 1px solid color-mix(in srgb, var(--color-outline-variant) 72%, transparent);
+  box-shadow:
+    inset -1px 0 0 color-mix(in srgb, var(--color-outline-variant) 45%, transparent),
+    8px 0 24px rgb(0 0 0 / 14%);
+}
+
+.shell-sidebar-right {
+  background: linear-gradient(
+    180deg,
+    var(--color-surface-container-high) 0%,
+    var(--color-surface-container-low) 100%
+  );
+  border-left: 1px solid color-mix(in srgb, var(--color-outline-variant) 72%, transparent);
+  box-shadow:
+    inset 1px 0 0 color-mix(in srgb, var(--color-outline-variant) 45%, transparent),
+    -8px 0 24px rgb(0 0 0 / 14%);
+}
+
+.composer-surface {
+  background: var(--color-surface-container-highest);
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 72%, transparent);
+  box-shadow: var(--elevation-1);
+}
+
+.message-assistant {
+  background: var(--color-surface-container-high);
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 72%, transparent);
+  box-shadow: var(--elevation-1);
 }
 
 .message-user {
-  background: var(--color-message-user);
-  box-shadow: var(--shadow-bubble);
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 32%, transparent);
+  box-shadow: var(--elevation-1);
 }
 
 .focus-brand {
@@ -72,4 +127,39 @@ a {
 
 .focus-brand:focus-visible {
   box-shadow: var(--focus-ring);
+}
+
+.state-layer {
+  position: relative;
+  overflow: hidden;
+}
+
+.state-layer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity var(--motion-duration-fast) var(--motion-easing-standard);
+  pointer-events: none;
+}
+
+.state-layer:hover::after {
+  opacity: var(--state-hover-opacity);
+}
+
+.state-layer:active::after {
+  opacity: var(--state-pressed-opacity);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+    scroll-behavior: auto;
+  }
 }

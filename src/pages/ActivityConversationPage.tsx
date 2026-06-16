@@ -38,12 +38,12 @@ export function ActivityConversationPage() {
     <div className="flex h-full min-h-[60vh] flex-col gap-3">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-text">{activity.title}</h1>
+          <h1 className="text-2xl font-semibold text-text">{activity.title}</h1>
           <p className="text-sm text-textMuted">{activity.excerpt}</p>
         </div>
         <Link
           to="/activities"
-          className="rounded-md border border-border px-3 py-2 text-xs font-medium text-text hover:bg-surfaceAlt"
+          className="state-layer focus-brand rounded-pill bg-secondaryContainer px-4 py-2 text-xs font-medium text-onSecondaryContainer shadow-e1"
         >
           All activities
         </Link>

@@ -15,13 +15,13 @@ export function RightPanel({ activityId, onClose }: RightPanelProps) {
   const contextualArtifacts = getArtifactsByActivity(activityId)
 
   return (
-    <aside className="flex h-full flex-col bg-[radial-gradient(circle_at_top,rgba(125,53,233,0.12),transparent_40%),var(--color-bg)] p-4">
+    <aside className="flex h-full flex-col bg-transparent p-4">
       <div className="mb-4 flex items-center justify-between">
         <div>
           <h2 className="text-sm font-semibold text-text">Context panel</h2>
           <p className="text-xs text-textMuted">Artifacts and workflow cards</p>
         </div>
-        <IconButton variant="glass" size="lg" onClick={onClose} aria-label="Hide context panel">
+        <IconButton variant="default" size="lg" onClick={onClose} aria-label="Hide context panel">
           <Icon name="close" className="h-4 w-4" />
         </IconButton>
       </div>
@@ -38,7 +38,7 @@ export function RightPanel({ activityId, onClose }: RightPanelProps) {
               <li key={artifact.id}>
                 <Link
                   to={`/artifacts/${artifact.id}`}
-                  className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+                  className="block rounded-xl focus-brand"
                 >
                   <Card variant="snippet" className="space-y-2 p-3">
                     <div className="flex items-center justify-between">
@@ -59,16 +59,16 @@ export function RightPanel({ activityId, onClose }: RightPanelProps) {
             Workflow
           </h2>
           <Card variant="reasoning" className="space-y-2 p-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-textMuted">Multi actions</p>
-            <p className="text-sm font-semibold text-text">Background sync and evidence extraction running.</p>
-            <div className="flex items-center gap-2 text-xs text-textMuted">
+            <p className="text-xs font-semibold uppercase tracking-wide">Multi actions</p>
+            <p className="text-sm font-semibold">Background sync and evidence extraction running.</p>
+            <div className="flex items-center gap-2 text-xs">
               <Icon name="clock" className="h-3.5 w-3.5" />
               Updated moments ago
             </div>
           </Card>
           <Card variant="followUp" className="space-y-1 p-3">
-            <p className="text-xs uppercase tracking-wide text-textMuted">Follow up</p>
-            <p className="text-sm text-text">Review SAFE agreement excerpts before final reply.</p>
+            <p className="text-xs uppercase tracking-wide">Follow up</p>
+            <p className="text-sm">Review SAFE agreement excerpts before final reply.</p>
           </Card>
         </section>
       </div>

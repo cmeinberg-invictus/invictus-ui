@@ -97,10 +97,10 @@ src/
 
 ## Design and UX Notes
 
-- Lumen ("Midnight Amethyst") system with Locked Mobile visual pass applied across shell, chat, and cards
+- Material 3-inspired visual system with semantic tokens for color roles, typography, shape, elevation, and motion
 - Theme support: light and dark via `data-theme`
-- Tokenized styles in `src/styles/tokens.css` (brand, typography, spacing, radius, glass surfaces)
-- UI primitives under `src/components/ui/` include Lumen-style `Button`, `IconButton`, `Icon`, `Card`, `Chip`, and `Pill`
+- Tokenized styles in `src/styles/tokens.css` (surface containers, primary/secondary/tertiary roles, state layers, focus, reduced motion)
+- UI primitives under `src/components/ui/` include Material-style `Button`, `IconButton`, `Icon`, `Card`, `Chip`, and `Pill`
 - URL-driven state for route context and right-panel visibility
 - Mock-first implementation with local in-memory state
 

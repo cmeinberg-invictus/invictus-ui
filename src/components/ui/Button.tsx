@@ -10,22 +10,23 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-accent text-white hover:bg-accentStrong active:brightness-110',
+  primary: 'bg-primary text-onPrimary shadow-e1 hover:brightness-105 active:brightness-95',
   secondary:
-    'border border-composerBorder bg-surfaceAlt/90 text-text hover:border-accent/40 hover:bg-accentSoft/70 active:bg-surface',
-  tertiary: 'bg-transparent text-textMuted hover:bg-surfaceAlt hover:text-text',
-  glass: 'chat-glass-input text-text hover:bg-accentSoft/55 active:bg-accentSoft/70',
-  ghost: 'bg-transparent text-textMuted hover:bg-surfaceAlt hover:text-text',
-  danger: 'bg-danger text-white hover:brightness-110',
+    'bg-surfaceContainerHigh text-text shadow-e1 hover:bg-surfaceContainerHighest active:bg-surfaceContainer',
+  tertiary: 'bg-transparent text-textMuted hover:bg-surfaceContainerHigh hover:text-text shadow-none',
+  glass:
+    'border border-outlineVariant bg-surfaceContainerLow text-text shadow-e1 hover:bg-surfaceContainer active:bg-surfaceContainerLow',
+  ghost: 'bg-transparent text-textMuted shadow-none hover:bg-surfaceContainerLow hover:text-text',
+  danger: 'bg-error text-onError shadow-e1 hover:brightness-105 active:brightness-95',
 }
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'h-8 px-3 text-xs',
-  md: 'h-10 px-4 text-sm',
-  lg: 'h-11 px-5 text-sm',
-  'icon-sm': 'h-8 w-8 p-0 text-xs',
+  sm: 'h-8 px-3 text-[0.8125rem] font-medium',
+  md: 'h-10 px-5 text-sm font-medium',
+  lg: 'h-12 px-6 text-sm font-semibold',
+  'icon-sm': 'h-8 w-8 p-0 text-[0.8125rem]',
   'icon-md': 'h-10 w-10 p-0 text-sm',
-  'icon-lg': 'h-11 w-11 p-0 text-sm',
+  'icon-lg': 'h-12 w-12 p-0 text-sm',
 }
 
 export function Button({
@@ -39,7 +40,7 @@ export function Button({
     <button
       type={type}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-pill font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-40',
+        'state-layer inline-flex items-center justify-center gap-2 rounded-pill transition-[background-color,color,box-shadow,border-color,opacity] duration-150 ease-out focus-brand disabled:pointer-events-none disabled:opacity-50',
         variantClasses[variant],
         sizeClasses[size],
         size.startsWith('icon') && 'rounded-full',

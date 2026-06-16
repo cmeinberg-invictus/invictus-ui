@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes } from 'react'
 import { cn } from '../../lib/cn'
 
-type IconButtonVariant = 'default' | 'glass'
+type IconButtonVariant = 'default' | 'filled' | 'tonal' | 'outlined' | 'glass'
 type IconButtonSize = 'sm' | 'md' | 'lg'
 
 type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -10,16 +10,21 @@ type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 }
 
 const sizeClasses: Record<IconButtonSize, string> = {
-  sm: 'h-9 w-9',
+  sm: 'h-8 w-8',
   md: 'h-10 w-10',
-  lg: 'h-11 w-11',
+  lg: 'h-12 w-12',
 }
 
 const variantClasses: Record<IconButtonVariant, string> = {
   default:
-    'bg-controlNeutral text-[color:var(--color-text)] hover:brightness-110 active:brightness-95',
+    'bg-surfaceContainerHigh text-text shadow-e1 hover:bg-surfaceContainerHighest active:bg-surfaceContainer',
+  filled: 'bg-primary text-onPrimary shadow-e1 hover:brightness-105 active:brightness-95',
+  tonal:
+    'bg-secondaryContainer text-onSecondaryContainer shadow-e1 hover:brightness-105 active:brightness-95',
+  outlined:
+    'border border-outlineVariant bg-surfaceContainer text-text shadow-none hover:bg-surfaceContainerHigh',
   glass:
-    'chat-glass-input text-text hover:bg-accentSoft/55 active:bg-accentSoft/70',
+    'border border-outlineVariant bg-surfaceContainerLow text-text shadow-e1 hover:bg-surfaceContainer active:bg-surfaceContainerLow',
 }
 
 export function IconButton({
@@ -33,7 +38,7 @@ export function IconButton({
     <button
       type={type}
       className={cn(
-        'inline-flex items-center justify-center rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50',
+        'state-layer inline-flex items-center justify-center rounded-full transition-[background-color,color,box-shadow,border-color,opacity] duration-150 ease-out focus-brand disabled:pointer-events-none disabled:opacity-50',
         sizeClasses[size],
         variantClasses[variant],
         className,

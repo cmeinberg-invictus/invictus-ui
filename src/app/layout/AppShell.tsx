@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Outlet, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { IconButton } from '../../components/ui/IconButton'
 import { Icon } from '../../components/ui/Icon'
@@ -31,6 +31,27 @@ export function AppShell() {
     ? 'Chat context'
     : 'Workspace overview'
 
+  useEffect(() => {
+    if (!isMobileNavOpen) {
+      return
+    }
+
+    const previousOverflow = document.body.style.overflow
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsMobileNavOpen(false)
+      }
+    }
+
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKeyDown)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [isMobileNavOpen])
+
   const setRightPanelOpen = (open: boolean) => {
     const next = new URLSearchParams(searchParams)
     if (open) {
@@ -42,9 +63,9 @@ export function AppShell() {
   }
 
   return (
-    <div className="min-h-screen bg-bg text-text">
+    <div className="min-h-screen bg-background text-text">
       <div className="grid min-h-screen grid-cols-1 md:grid-cols-[18rem_minmax(0,1fr)]">
-        <aside className="hidden border-r border-composerBorder bg-bg md:block">
+        <aside className="shell-sidebar-left hidden md:block">
           <LeftNav />
         </aside>
 
@@ -55,12 +76,12 @@ export function AppShell() {
           )}
         >
           <section className="flex min-h-screen flex-col">
-            <header className="shell-fade-top border-b border-composerBorder bg-bg/86 px-4 py-3 backdrop-blur-xl">
+            <header className="top-app-bar sticky top-0 z-20 px-4 py-3">
               <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3">
                 <IconButton
                   className="md:hidden"
                   onClick={() => setIsMobileNavOpen(true)}
-                  variant="glass"
+                  variant="default"
                   size="lg"
                   aria-label="Open navigation"
                 >
@@ -71,21 +92,21 @@ export function AppShell() {
                   <p
                     className={cn(
                       'text-base font-semibold text-text',
-                      heading === 'Verena' && 'font-heading text-[21px] leading-7 tracking-[0.03px]',
+                      heading === 'Verena' && 'text-xl',
                     )}
                   >
                     {heading}
                   </p>
-                  <p className="text-xs text-textMuted">{subtitle}</p>
+                  <p className="text-sm text-textMuted">{subtitle}</p>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <IconButton variant="glass" size="lg" aria-label="Search workspace">
+                  <IconButton variant="default" size="lg" aria-label="Search workspace">
                     <Icon name="search" className="h-4 w-4" />
                   </IconButton>
                   {!rightPanelOpen && (
                     <IconButton
-                      variant="glass"
+                      variant="default"
                       size="lg"
                       onClick={() => setRightPanelOpen(true)}
                       aria-label="Show context panel"
@@ -97,13 +118,13 @@ export function AppShell() {
               </div>
             </header>
 
-            <main className="min-h-0 flex-1 bg-[radial-gradient(circle_at_top,rgba(125,53,233,0.11),transparent_40%),var(--color-bg)] p-4 md:p-6">
+            <main className="app-stage min-h-0 flex-1 p-4 md:p-6" id="main-content">
               <Outlet />
             </main>
           </section>
 
           {rightPanelOpen && (
-            <div className="hidden border-l border-composerBorder xl:block">
+            <div className="shell-sidebar-right hidden xl:block">
               <RightPanel activityId={activityId ?? null} onClose={() => setRightPanelOpen(false)} />
             </div>
           )}
@@ -112,7 +133,7 @@ export function AppShell() {
 
       {isMobileNavOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden" role="dialog" aria-modal="true">
-          <div className="w-72 border-r border-composerBorder bg-bg">
+          <div className="shell-sidebar-left w-72">
             <LeftNav onNavigate={() => setIsMobileNavOpen(false)} />
           </div>
           <button

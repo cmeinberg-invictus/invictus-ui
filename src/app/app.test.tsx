@@ -22,7 +22,7 @@ describe('Verena SPA', () => {
       await screen.findByRole('heading', { name: /session persistence and data clearing bugs/i }),
     ).toBeInTheDocument()
     expect(screen.getByPlaceholderText(/chat with verena/i)).toBeInTheDocument()
-    expect(screen.getByText(/tap and hold content to share feedback/i)).toBeInTheDocument()
+    expect(screen.getByText(/please verify important outputs/i)).toBeInTheDocument()
   })
 
   test('renders shell navigation and core menu entries', async () => {

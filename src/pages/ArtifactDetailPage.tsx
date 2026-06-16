@@ -21,14 +21,14 @@ export function ArtifactDetailPage() {
     <div className="space-y-4">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-text">{artifact.title}</h1>
+          <h1 className="text-3xl font-semibold text-text">{artifact.title}</h1>
           <p className="text-sm text-textMuted">
             {artifact.type} - Updated {artifact.updatedAt}
           </p>
         </div>
         <Link
           to="/artifacts"
-          className="rounded-md border border-border px-3 py-2 text-xs font-medium text-text hover:bg-surfaceAlt"
+          className="state-layer focus-brand rounded-pill bg-secondaryContainer px-4 py-2 text-xs font-medium text-onSecondaryContainer shadow-e1"
         >
           Back to artifacts
         </Link>

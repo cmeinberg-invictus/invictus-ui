@@ -11,12 +11,12 @@ export function Chip({ className, icon, children, type = 'button', ...props }: C
     <button
       type={type}
       className={cn(
-        'inline-flex h-9 items-center gap-2 rounded-pill border border-border bg-surface px-3 text-xs font-semibold text-text transition hover:border-accent/45 hover:bg-accentSoft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
+        'state-layer inline-flex h-8 items-center gap-2 rounded-pill border border-outline bg-surfaceContainerLow px-3 text-xs font-medium text-text transition-colors focus-brand',
         className,
       )}
       {...props}
     >
-      {icon ? <Icon name={icon} className="h-3.5 w-3.5 text-accent" /> : null}
+      {icon ? <Icon name={icon} className="h-3.5 w-3.5 text-primary" /> : null}
       <span>{children}</span>
     </button>
   )

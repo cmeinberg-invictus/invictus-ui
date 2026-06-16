@@ -4,13 +4,13 @@ import { Badge } from './Badge'
 import { Button } from './Button'
 import { Chip } from './Chip'
 
-describe('Lumen primitives', () => {
-  test('renders glass button with pill shape', () => {
+describe('Material primitives', () => {
+  test('renders outlined button with pill shape', () => {
     render(<Button variant="glass">Ask Verena</Button>)
 
     const button = screen.getByRole('button', { name: /ask verena/i })
     expect(button).toHaveClass('rounded-pill')
-    expect(button).toHaveClass('chat-glass-input')
+    expect(button).toHaveClass('border-outlineVariant')
   })
 
   test('renders role-based badge label', () => {

@@ -23,10 +23,10 @@ export function NavItem({ to, label, icon, onNavigate }: NavItemProps) {
       onClick={onNavigate}
       className={({ isActive }) =>
         cn(
-          'flex h-11 items-center gap-2 rounded-pill px-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
+          'state-layer flex h-11 items-center gap-2 rounded-pill px-4 text-sm font-medium transition focus-brand',
           isActive
-            ? 'chat-glass-input text-text shadow-glass'
-            : 'text-textMuted hover:bg-surfaceAlt/85 hover:text-text',
+            ? 'bg-surfaceContainerHighest text-text shadow-e1'
+            : 'text-textMuted hover:bg-surfaceContainer hover:text-text',
         )
       }
     >

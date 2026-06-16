@@ -9,9 +9,9 @@ type BadgeProps = {
 }
 
 const styleByStatus: Record<TaskStatus, string> = {
-  running: 'bg-warning/15 text-warning',
-  completed: 'bg-success/15 text-success',
-  failed: 'bg-danger/15 text-danger',
+  running: 'bg-warningContainer text-onWarningContainer',
+  completed: 'bg-successContainer text-onSuccessContainer',
+  failed: 'bg-errorContainer text-onErrorContainer',
 }
 
 const textByStatus: Record<TaskStatus, string> = {
@@ -21,9 +21,9 @@ const textByStatus: Record<TaskStatus, string> = {
 }
 
 const roleStyleByEmphasis: Record<'low' | 'medium' | 'high', string> = {
-  low: 'bg-accentSoft text-textMuted',
-  medium: 'bg-surfaceAlt text-text',
-  high: 'bg-accent text-white',
+  low: 'bg-surfaceContainerHigh text-textMuted',
+  medium: 'bg-secondaryContainer text-onSecondaryContainer',
+  high: 'bg-primary text-onPrimary',
 }
 
 export function Badge({
@@ -36,15 +36,15 @@ export function Badge({
     channel === 'agent'
       ? roleStyleByEmphasis[emphasis]
       : channel === 'customer'
-        ? 'bg-surfaceAlt text-text'
-        : 'bg-accentSoft text-textMuted'
+        ? 'bg-surfaceContainerHigh text-text'
+        : 'bg-surfaceContainerLow text-textMuted'
 
   const text = label ?? (status ? textByStatus[status] : 'Badge')
 
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-pill px-2.5 py-1 text-xs font-semibold',
+        'inline-flex items-center rounded-pill px-2.5 py-1 text-xs font-medium',
         status ? styleByStatus[status] : roleClass,
       )}
     >

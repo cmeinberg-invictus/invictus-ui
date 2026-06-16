@@ -10,7 +10,7 @@ export function NotFoundPage() {
       />
       <Link
         to="/"
-        className="inline-flex rounded-md border border-border px-3 py-2 text-sm font-medium text-text hover:bg-surfaceAlt"
+        className="state-layer focus-brand inline-flex rounded-pill bg-secondaryContainer px-4 py-2 text-sm font-medium text-onSecondaryContainer shadow-e1"
       >
         Go to Home
       </Link>

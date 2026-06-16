@@ -8,18 +8,18 @@ type CardProps = HTMLAttributes<HTMLDivElement> & {
 }
 
 const variantClasses: Record<CardVariant, string> = {
-  default: 'border-composerBorder bg-surface/94',
-  snippet: 'chat-glass-input',
-  reasoning: 'border-accent/35 bg-accentSoft/70',
-  evidence: 'border-success/40 bg-success/10',
-  followUp: 'border-warning/40 bg-warning/10',
+  default: 'border-transparent bg-surfaceContainerLow text-text shadow-e1',
+  snippet: 'border-transparent bg-surfaceContainer text-text shadow-e1',
+  reasoning: 'border-transparent bg-primaryContainer/70 text-onPrimaryContainer shadow-e1',
+  evidence: 'border-transparent bg-successContainer text-onSuccessContainer shadow-e1',
+  followUp: 'border-transparent bg-warningContainer text-onWarningContainer shadow-e1',
 }
 
 export function Card({ className, variant = 'default', ...props }: CardProps) {
   return (
     <section
       className={cn(
-        'rounded-xl border p-4 shadow-panel transition',
+        'rounded-xl border p-4 transition-colors',
         variantClasses[variant],
         className,
       )}

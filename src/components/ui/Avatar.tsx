@@ -23,14 +23,14 @@ export function Avatar({ name, variant = 'customer', size = 'md' }: AvatarProps)
         src={verenaAvatar}
         alt=""
         aria-hidden="true"
-        className={`${sizeClass} rounded-full border border-glassBorder bg-surface object-cover`}
+        className={`${sizeClass} rounded-full border border-outlineVariant bg-surfaceContainerHigh object-cover`}
       />
     )
   }
 
   return (
     <span
-      className={`inline-flex ${sizeClass} items-center justify-center rounded-full bg-accent text-xs font-semibold text-white`}
+      className={`inline-flex ${sizeClass} items-center justify-center rounded-full bg-primaryContainer text-xs font-semibold text-onPrimaryContainer`}
       aria-hidden="true"
     >
       {getInitials(name)}
