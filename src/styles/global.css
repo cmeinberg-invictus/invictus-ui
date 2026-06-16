@@ -29,6 +29,18 @@ a {
   text-decoration: none;
 }
 
+.type-headline {
+  letter-spacing: -0.012em;
+}
+
+.type-title {
+  letter-spacing: -0.006em;
+}
+
+.type-label {
+  letter-spacing: 0.01em;
+}
+
 .scroll-area {
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--color-outline) 50%, transparent) transparent;

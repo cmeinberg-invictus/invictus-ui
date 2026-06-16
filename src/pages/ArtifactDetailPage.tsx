@@ -22,8 +22,8 @@ export function ArtifactDetailPage() {
     <div className="space-y-4">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold text-text">{artifact.title}</h1>
-          <p className="text-sm text-textMuted">
+          <h1 className="type-headline text-headline-sm font-medium text-text">{artifact.title}</h1>
+          <p className="text-body-md text-textMuted">
             {artifact.type} - Updated {artifact.updatedAt}
           </p>
         </div>

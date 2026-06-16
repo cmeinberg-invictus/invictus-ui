@@ -18,7 +18,7 @@ export function ArtifactsPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-headline-sm font-medium text-text">Artifacts</h1>
+        <h1 className="type-headline text-headline-sm font-medium text-text">Artifacts</h1>
         <p className="text-body-md text-textMuted">Documents and outputs generated from activities.</p>
       </header>
 
@@ -31,7 +31,7 @@ export function ArtifactsPage() {
                 className="focus-brand block px-5 py-4 transition-colors hover:bg-surfaceContainerHigh/50"
               >
                 <p className="text-body-md font-medium text-text">{artifact.title}</p>
-                <p className="mt-1 text-label-md font-medium tracking-wide text-textMuted">{artifact.type}</p>
+                <p className="type-label mt-1 text-label-md font-medium text-textMuted">{artifact.type}</p>
                 <p className="mt-2 text-label-md text-textMuted">Updated {artifact.updatedAt}</p>
               </Link>
             </li>

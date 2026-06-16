@@ -18,7 +18,7 @@ export function RightPanel({ activityId, onClose }: RightPanelProps) {
     <aside className="flex h-full flex-col bg-transparent p-4">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h2 className="text-title-sm font-medium text-text">Context panel</h2>
+          <h2 className="type-title text-title-sm font-medium text-text">Context panel</h2>
           <p className="text-label-md text-textMuted">Artifacts and workflow cards</p>
         </div>
         <IconButton variant="ghost" size="md" onClick={onClose} aria-label="Hide context panel">
@@ -30,7 +30,7 @@ export function RightPanel({ activityId, onClose }: RightPanelProps) {
         <BackgroundTasks activityId={activityId} />
 
         <section aria-labelledby="artifact-title" className="space-y-2">
-          <h2 id="artifact-title" className="text-title-sm font-medium text-text">
+          <h2 id="artifact-title" className="type-title text-title-sm font-medium text-text">
             Artifacts
           </h2>
           <ul className="divide-y divide-[color:var(--surface-border)] rounded-xl border border-[color:var(--surface-border)] bg-surfaceContainerLow">
@@ -42,7 +42,7 @@ export function RightPanel({ activityId, onClose }: RightPanelProps) {
                 >
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <p className="text-label-md font-medium tracking-wide text-textMuted">{artifact.type}</p>
+                      <p className="type-label text-label-md font-medium text-textMuted">{artifact.type}</p>
                       <Icon name="chevronRight" className="h-4 w-4 text-textMuted" />
                     </div>
                     <p className="text-body-md font-medium text-text">{artifact.title}</p>
@@ -55,11 +55,11 @@ export function RightPanel({ activityId, onClose }: RightPanelProps) {
         </section>
 
         <section aria-labelledby="workflow-title" className="space-y-2">
-          <h2 id="workflow-title" className="text-title-sm font-medium text-text">
+          <h2 id="workflow-title" className="type-title text-title-sm font-medium text-text">
             Workflow
           </h2>
           <Card variant="reasoning" className="space-y-2 p-3">
-            <p className="text-label-md font-medium tracking-wide">Multi actions</p>
+            <p className="type-label text-label-md font-medium">Multi actions</p>
             <p className="text-body-md font-medium">Background sync and evidence extraction running.</p>
             <div className="flex items-center gap-2 text-label-md">
               <Icon name="clock" className="h-3.5 w-3.5" />
@@ -67,7 +67,7 @@ export function RightPanel({ activityId, onClose }: RightPanelProps) {
             </div>
           </Card>
           <Card variant="followUp" className="space-y-1 p-3">
-            <p className="text-label-md font-medium tracking-wide">Follow up</p>
+            <p className="type-label text-label-md font-medium">Follow up</p>
             <p className="text-body-md">Review SAFE agreement excerpts before final reply.</p>
           </Card>
         </section>

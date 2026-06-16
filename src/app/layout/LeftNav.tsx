@@ -18,7 +18,7 @@ export function LeftNav({ onNavigate }: LeftNavProps) {
       <div className="space-y-3">
         <div className="flex items-center gap-2">
           <img src={verenaLogoSymbol} alt="" aria-hidden="true" className="h-4 w-4" />
-          <p className="text-title-lg font-medium text-text">Verena</p>
+          <p className="type-title text-title-lg font-medium text-text">Verena</p>
         </div>
         <label className="composer-surface flex h-10 items-center gap-2 rounded-pill px-3">
           <Icon name="search" className="h-4 w-4 text-textMuted" />
@@ -44,7 +44,7 @@ export function LeftNav({ onNavigate }: LeftNavProps) {
       </div>
 
       <section className="min-h-0 flex-1 overflow-hidden" aria-labelledby="left-nav-recent">
-        <h2 id="left-nav-recent" className="mb-2 px-3 text-label-md font-medium tracking-wide text-textMuted">
+        <h2 id="left-nav-recent" className="type-label mb-2 px-3 text-label-md font-medium text-textMuted">
           Recents
         </h2>
         <ul className="scroll-area max-h-full divide-y divide-[color:var(--surface-border)] overflow-y-auto pr-1">

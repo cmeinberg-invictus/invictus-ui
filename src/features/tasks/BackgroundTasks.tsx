@@ -16,7 +16,7 @@ export function BackgroundTasks({ activityId }: BackgroundTasksProps) {
   return (
     <section aria-labelledby="background-tasks-title" className="space-y-3">
       <header className="flex items-center justify-between">
-        <h2 id="background-tasks-title" className="text-title-sm font-medium text-text">
+        <h2 id="background-tasks-title" className="type-title text-title-sm font-medium text-text">
           Background tasks
         </h2>
         <Button size="sm" variant="tertiary" onClick={clearCompletedTasks}>

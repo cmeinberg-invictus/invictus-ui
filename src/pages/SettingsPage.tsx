@@ -8,13 +8,13 @@ export function SettingsPage() {
   return (
     <div className="space-y-4">
       <header>
-        <h1 className="text-headline-sm font-medium text-text">User settings</h1>
+        <h1 className="type-headline text-headline-sm font-medium text-text">User settings</h1>
         <p className="text-body-md text-textMuted">Customize your Verena workspace preferences.</p>
       </header>
 
       <Panel className="flex items-center justify-between gap-4 p-4">
         <div>
-          <h2 className="text-title-sm font-medium text-text">Theme</h2>
+          <h2 className="type-title text-title-sm font-medium text-text">Theme</h2>
           <p className="text-body-md text-textMuted">
             Current theme: <span className="capitalize">{theme}</span>
           </p>

@@ -89,7 +89,7 @@ export function AppShell() {
                 <div className="flex-1 text-center md:text-left">
                   <p
                     className={cn(
-                      'text-title-md font-medium text-text',
+                      'type-title text-title-md font-medium text-text',
                       heading === 'Verena' && 'text-title-lg',
                     )}
                   >

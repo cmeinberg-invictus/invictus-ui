@@ -18,7 +18,7 @@ export function ActivitiesPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-headline-sm font-medium text-text">Activities</h1>
+        <h1 className="type-headline text-headline-sm font-medium text-text">Activities</h1>
         <p className="text-body-md text-textMuted">Track and reopen your workspace sessions.</p>
       </header>
 
