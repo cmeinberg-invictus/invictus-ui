@@ -1,7 +1,11 @@
 import { useMemo, useState, type FormEvent } from 'react'
+import { Avatar } from '../../components/ui/Avatar'
 import { EmptyState } from '../../components/ui/EmptyState'
+import { Icon } from '../../components/ui/Icon'
+import { IconButton } from '../../components/ui/IconButton'
 import { Panel } from '../../components/ui/Panel'
 import { useAppState } from '../../store/AppStateProvider'
+import type { Message } from '../../types/domain'
 import { cn } from '../../lib/cn'
 
 type ChatViewProps = {
@@ -29,32 +33,13 @@ export function ChatView({ activityId }: ChatViewProps) {
   }
 
   return (
-    <Panel className="flex min-h-0 flex-1 flex-col overflow-hidden">
-      <div className="scroll-area flex-1 space-y-3 overflow-y-auto p-4">
+    <Panel className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-[24px] border-composerBorder bg-bg">
+      <div className="chat-fade-top pointer-events-none absolute inset-x-0 top-0 z-10 h-36" />
+      <div className="chat-fade-bottom pointer-events-none absolute inset-x-0 bottom-24 z-10 h-36" />
+
+      <div className="scroll-area flex-1 space-y-3 overflow-y-auto px-4 pb-6 pt-24">
         {messages.length ? (
-          messages.map((message) => (
-            <article
-              key={message.id}
-              className={cn(
-                'max-w-[85%] rounded-lg px-3 py-2 text-sm',
-                message.role === 'user'
-                  ? 'ml-auto bg-accent text-white'
-                  : message.role === 'assistant'
-                    ? 'bg-surfaceAlt text-text'
-                    : 'mx-auto bg-warning/15 text-warning',
-              )}
-            >
-              <p>{message.content}</p>
-              <p
-                className={cn(
-                  'mt-1 text-[11px]',
-                  message.role === 'user' ? 'text-white/80' : 'text-textMuted',
-                )}
-              >
-                {message.timestamp}
-              </p>
-            </article>
-          ))
+          messages.map((message) => <MessageBubble key={message.id} message={message} />)
         ) : (
           <EmptyState
             title="No messages yet"
@@ -63,35 +48,74 @@ export function ChatView({ activityId }: ChatViewProps) {
         )}
       </div>
 
-      <form className="border-t border-border p-4" onSubmit={onSubmit}>
-        <label htmlFor="chat-input" className="mb-2 block text-xs font-medium uppercase text-textMuted">
+      <form className="relative z-20 px-3 pb-4 pt-2" onSubmit={onSubmit}>
+        <label htmlFor="chat-input" className="sr-only">
           Message
         </label>
-        <textarea
-          id="chat-input"
-          name="message"
-          value={draft}
-          onChange={(event) => setDraft(event.target.value)}
-          rows={3}
-          placeholder="Type / for commands"
-          className="w-full resize-y rounded-md border border-border bg-bg px-3 py-2 text-sm text-text outline-none ring-accent transition placeholder:text-textMuted focus:ring-2"
-        />
-        <div className="mt-2 flex items-center justify-between gap-3">
+
+        <div className="chat-glass-input flex items-center gap-2 rounded-ios p-2">
+          <IconButton variant="glass" size="sm" aria-label="Add attachment">
+            <Icon name="plus" className="h-4 w-4" />
+          </IconButton>
+          <textarea
+            id="chat-input"
+            name="message"
+            value={draft}
+            onChange={(event) => setDraft(event.target.value)}
+            rows={1}
+            placeholder="Chat with Verena..."
+            className="max-h-32 min-h-[44px] w-full resize-y bg-transparent py-3 text-[15px] text-text outline-none placeholder:text-textSubtle"
+          />
+          <IconButton variant="default" size="sm" type="submit" aria-label="Send">
+            <Icon name="arrowUp" className="h-4 w-4" />
+            <span className="sr-only">Send</span>
+          </IconButton>
+        </div>
+        <div className="mt-2 flex items-center justify-between gap-3 px-1">
           {submitError ? (
             <p className="text-sm text-danger" role="alert">
               {submitError}
             </p>
           ) : (
-            <p className="text-xs text-textMuted">Messages are mocked for this scaffold.</p>
+            <p className="w-full text-center text-[11px] text-textMuted">
+              Verena can make mistakes, tap and hold content to share feedback
+            </p>
           )}
-          <button
-            type="submit"
-            className="inline-flex h-9 items-center justify-center rounded-md bg-accent px-3 text-sm font-medium text-white transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-          >
-            Send
-          </button>
         </div>
       </form>
     </Panel>
+  )
+}
+
+type MessageBubbleProps = {
+  message: Message
+}
+
+function MessageBubble({ message }: MessageBubbleProps) {
+  if (message.role === 'assistant') {
+    return (
+      <article className="flex max-w-[92%] items-end gap-3">
+        <Avatar name="Verena" variant="agent" size="chat" />
+        <div className="message-agent max-w-[305px] rounded-bl-xs rounded-br-xl rounded-tl-xl rounded-tr-xl px-4 py-3">
+          <p className="text-base leading-6 text-text">{message.content}</p>
+          <p className="mt-1 text-[11px] leading-[18px] text-textMuted">{message.timestamp}</p>
+        </div>
+      </article>
+    )
+  }
+
+  if (message.role === 'system') {
+    return (
+      <article className="mx-auto max-w-[90%] rounded-pill border border-warning/35 bg-warning/10 px-3 py-1.5 text-center">
+        <p className="text-xs text-warning">{message.content}</p>
+      </article>
+    )
+  }
+
+  return (
+    <article className={cn('message-user ml-auto max-w-[85%] rounded-bl-xl rounded-br-xs rounded-tl-xl rounded-tr-xl px-4 py-3 text-white')}>
+      <p className="text-base leading-6">{message.content}</p>
+      <p className="mt-1 text-[11px] leading-[18px] text-white/85">{message.timestamp}</p>
+    </article>
   )
 }

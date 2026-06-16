@@ -6,7 +6,10 @@ type PanelProps = HTMLAttributes<HTMLDivElement>
 export function Panel({ className, ...props }: PanelProps) {
   return (
     <div
-      className={cn('rounded-lg border border-border bg-surface shadow-panel', className)}
+      className={cn(
+        'rounded-xl border border-composerBorder bg-surface/92 shadow-panel backdrop-blur-md',
+        className,
+      )}
       {...props}
     />
   )

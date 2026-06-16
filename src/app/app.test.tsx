@@ -21,7 +21,8 @@ describe('Verena SPA', () => {
     expect(
       await screen.findByRole('heading', { name: /session persistence and data clearing bugs/i }),
     ).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/type \/ for commands/i)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/chat with verena/i)).toBeInTheDocument()
+    expect(screen.getByText(/tap and hold content to share feedback/i)).toBeInTheDocument()
   })
 
   test('renders shell navigation and core menu entries', async () => {
@@ -41,6 +42,7 @@ describe('Verena SPA', () => {
     await user.click(screen.getByRole('button', { name: /^send$/i }))
 
     expect(screen.getByText(/please summarize the latest checks\./i)).toBeInTheDocument()
+    expect(screen.getByText(/received\. i queued that update for activity/i)).toBeInTheDocument()
   })
 
   test('theme toggle updates data-theme attribute', async () => {

@@ -1,5 +1,6 @@
 import { Badge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
+import { Card } from '../../components/ui/Card'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { useAppState } from '../../store/AppStateProvider'
 
@@ -18,7 +19,7 @@ export function BackgroundTasks({ activityId }: BackgroundTasksProps) {
         <h2 id="background-tasks-title" className="text-sm font-semibold text-text">
           Background tasks
         </h2>
-        <Button size="sm" variant="ghost" onClick={clearCompletedTasks}>
+        <Button size="sm" variant="tertiary" onClick={clearCompletedTasks}>
           Clear
         </Button>
       </header>
@@ -26,13 +27,15 @@ export function BackgroundTasks({ activityId }: BackgroundTasksProps) {
       {filteredTasks.length ? (
         <ul className="space-y-2">
           {filteredTasks.map((task) => (
-            <li key={task.id} className="rounded-md border border-border bg-surfaceAlt p-3">
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-sm font-medium text-text">{task.title}</p>
-                <Badge status={task.status} />
-              </div>
-              <p className="mt-1 text-xs text-textMuted">{task.subtitle}</p>
-              <p className="mt-1 text-xs text-textMuted">{task.updatedAt}</p>
+            <li key={task.id}>
+              <Card variant="default" className="space-y-1.5 p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm font-semibold text-text">{task.title}</p>
+                  <Badge status={task.status} />
+                </div>
+                <p className="text-xs text-textMuted">{task.subtitle}</p>
+                <p className="text-xs text-textMuted">{task.updatedAt}</p>
+              </Card>
             </li>
           ))}
         </ul>
