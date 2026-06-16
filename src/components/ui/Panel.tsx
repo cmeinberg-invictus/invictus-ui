@@ -7,7 +7,7 @@ export function Panel({ className, ...props }: PanelProps) {
   return (
     <div
       className={cn(
-        'rounded-xl border border-transparent bg-surfaceContainer shadow-e2',
+        'rounded-xl border border-[color:var(--surface-border)] bg-surfaceContainer shadow-e2',
         className,
       )}
       {...props}

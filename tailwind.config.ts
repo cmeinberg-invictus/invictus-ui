@@ -65,6 +65,18 @@ const config: Config = {
         sans: ['var(--font-sans)'],
         heading: ['var(--font-heading)'],
       },
+      fontSize: {
+        'headline-sm': ['var(--font-size-headline-sm)', { lineHeight: 'var(--line-height-headline-sm)' }],
+        'title-lg': ['var(--font-size-title-lg)', { lineHeight: 'var(--line-height-title-lg)' }],
+        'title-md': ['var(--font-size-title-md)', { lineHeight: 'var(--line-height-title-md)' }],
+        'title-sm': ['var(--font-size-title-sm)', { lineHeight: 'var(--line-height-title-sm)' }],
+        'body-lg': ['var(--font-size-body-lg)', { lineHeight: 'var(--line-height-body-lg)' }],
+        'body-md': ['var(--font-size-body-md)', { lineHeight: 'var(--line-height-body-md)' }],
+        'body-sm': ['var(--font-size-body-sm)', { lineHeight: 'var(--line-height-body-sm)' }],
+        'label-lg': ['var(--font-size-label-lg)', { lineHeight: 'var(--line-height-label-lg)' }],
+        'label-md': ['var(--font-size-label-md)', { lineHeight: 'var(--line-height-label-md)' }],
+        'label-sm': ['var(--font-size-label-sm)', { lineHeight: 'var(--line-height-label-sm)' }],
+      },
       borderRadius: {
         xs: 'var(--radius-xs)',
         sm: 'var(--radius-sm)',

@@ -8,8 +8,8 @@ type CardProps = HTMLAttributes<HTMLDivElement> & {
 }
 
 const variantClasses: Record<CardVariant, string> = {
-  default: 'border-transparent bg-surfaceContainerLow text-text shadow-e1',
-  snippet: 'border-transparent bg-surfaceContainer text-text shadow-e1',
+  default: 'border-[color:var(--surface-border)] bg-surfaceContainerLow text-text shadow-e1',
+  snippet: 'border-[color:var(--surface-border)] bg-surfaceContainer text-text shadow-e1',
   reasoning: 'border-transparent bg-primaryContainer/70 text-onPrimaryContainer shadow-e1',
   evidence: 'border-transparent bg-successContainer text-onSuccessContainer shadow-e1',
   followUp: 'border-transparent bg-warningContainer text-onWarningContainer shadow-e1',

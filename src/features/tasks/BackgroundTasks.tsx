@@ -1,7 +1,7 @@
 import { Badge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
-import { Card } from '../../components/ui/Card'
 import { EmptyState } from '../../components/ui/EmptyState'
+import { Panel } from '../../components/ui/Panel'
 import { useAppState } from '../../store/AppStateProvider'
 
 type BackgroundTasksProps = {
@@ -16,7 +16,7 @@ export function BackgroundTasks({ activityId }: BackgroundTasksProps) {
   return (
     <section aria-labelledby="background-tasks-title" className="space-y-3">
       <header className="flex items-center justify-between">
-        <h2 id="background-tasks-title" className="text-sm font-semibold text-text">
+        <h2 id="background-tasks-title" className="text-title-sm font-medium text-text">
           Background tasks
         </h2>
         <Button size="sm" variant="tertiary" onClick={clearCompletedTasks}>
@@ -25,20 +25,20 @@ export function BackgroundTasks({ activityId }: BackgroundTasksProps) {
       </header>
 
       {filteredTasks.length ? (
-        <ul className="space-y-2">
+        <Panel className="overflow-hidden border-[color:var(--surface-border)] bg-surfaceContainerLow">
+          <ul className="divide-y divide-[color:var(--surface-border)]">
           {filteredTasks.map((task) => (
-            <li key={task.id}>
-              <Card variant="default" className="space-y-1.5 p-3">
+            <li key={task.id} className="space-y-1.5 px-4 py-3">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-semibold text-text">{task.title}</p>
+                  <p className="text-body-md font-medium text-text">{task.title}</p>
                   <Badge status={task.status} />
                 </div>
-                <p className="text-xs text-textMuted">{task.subtitle}</p>
-                <p className="text-xs text-textMuted">{task.updatedAt}</p>
-              </Card>
+                <p className="text-label-md text-textMuted">{task.subtitle}</p>
+                <p className="text-label-md text-textMuted">{task.updatedAt}</p>
             </li>
           ))}
-        </ul>
+          </ul>
+        </Panel>
       ) : (
         <EmptyState title="No background tasks" description="Running jobs will appear here." />
       )}

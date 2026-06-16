@@ -16,25 +16,28 @@ export function ActivitiesPage() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-semibold text-text">Activities</h1>
-        <p className="text-sm text-textMuted">Track and reopen your workspace sessions.</p>
+        <h1 className="text-headline-sm font-medium text-text">Activities</h1>
+        <p className="text-body-md text-textMuted">Track and reopen your workspace sessions.</p>
       </header>
 
-      <ul className="space-y-3">
-        {activities.map((activity) => (
-          <li key={activity.id}>
-            <Panel className="p-4">
-              <Link to={`/activities/${activity.id}`} className="focus-brand block rounded-lg p-1">
-                <p className="text-sm font-semibold text-text">{activity.title}</p>
-                <p className="mt-1 text-sm text-textMuted">{activity.excerpt}</p>
-                <p className="mt-2 text-xs text-textMuted">Updated {activity.updatedAt}</p>
+      <Panel className="overflow-hidden">
+        <ul className="divide-y divide-[color:var(--surface-border)]">
+          {activities.map((activity) => (
+            <li key={activity.id}>
+              <Link
+                to={`/activities/${activity.id}`}
+                className="focus-brand block px-5 py-4 transition-colors hover:bg-surfaceContainerHigh/50"
+              >
+                <p className="text-body-md font-medium text-text">{activity.title}</p>
+                <p className="mt-1 text-body-md text-textMuted">{activity.excerpt}</p>
+                <p className="mt-2 text-label-md text-textMuted">Updated {activity.updatedAt}</p>
               </Link>
-            </Panel>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      </Panel>
     </div>
   )
 }

@@ -16,24 +16,28 @@ export function ArtifactsPage() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-semibold text-text">Artifacts</h1>
-        <p className="text-sm text-textMuted">Documents and outputs generated from activities.</p>
+        <h1 className="text-headline-sm font-medium text-text">Artifacts</h1>
+        <p className="text-body-md text-textMuted">Documents and outputs generated from activities.</p>
       </header>
-      <ul className="space-y-3">
-        {artifacts.map((artifact) => (
-          <li key={artifact.id}>
-            <Panel className="p-4">
-              <Link to={`/artifacts/${artifact.id}`} className="focus-brand block rounded-lg p-1">
-                <p className="text-sm font-semibold text-text">{artifact.title}</p>
-                <p className="mt-1 text-xs uppercase tracking-wide text-textMuted">{artifact.type}</p>
-                <p className="mt-2 text-xs text-textMuted">Updated {artifact.updatedAt}</p>
+
+      <Panel className="overflow-hidden">
+        <ul className="divide-y divide-[color:var(--surface-border)]">
+          {artifacts.map((artifact) => (
+            <li key={artifact.id}>
+              <Link
+                to={`/artifacts/${artifact.id}`}
+                className="focus-brand block px-5 py-4 transition-colors hover:bg-surfaceContainerHigh/50"
+              >
+                <p className="text-body-md font-medium text-text">{artifact.title}</p>
+                <p className="mt-1 text-label-md font-medium tracking-wide text-textMuted">{artifact.type}</p>
+                <p className="mt-2 text-label-md text-textMuted">Updated {artifact.updatedAt}</p>
               </Link>
-            </Panel>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      </Panel>
     </div>
   )
 }

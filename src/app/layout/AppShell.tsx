@@ -27,9 +27,7 @@ export function AppShell() {
   const rightPanelOpen = searchParams.get('rightPanel') !== 'closed'
   const breadcrumb = useMemo(() => getBreadcrumb(location.pathname), [location.pathname])
   const heading = location.pathname.startsWith('/activities/') ? 'Verena' : breadcrumb
-  const subtitle = location.pathname.startsWith('/activities/')
-    ? 'Chat context'
-    : 'Workspace overview'
+  const subtitle = location.pathname.startsWith('/activities/') ? '' : 'Workspace overview'
 
   useEffect(() => {
     if (!isMobileNavOpen) {
@@ -76,13 +74,13 @@ export function AppShell() {
           )}
         >
           <section className="flex min-h-screen flex-col">
-            <header className="top-app-bar sticky top-0 z-20 px-4 py-3">
+            <header className="top-app-bar sticky top-0 z-20 px-4 py-4">
               <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3">
                 <IconButton
                   className="md:hidden"
                   onClick={() => setIsMobileNavOpen(true)}
-                  variant="default"
-                  size="lg"
+                  variant="ghost"
+                  size="md"
                   aria-label="Open navigation"
                 >
                   <Icon name="menu" className="h-4 w-4" />
@@ -91,23 +89,23 @@ export function AppShell() {
                 <div className="flex-1 text-center md:text-left">
                   <p
                     className={cn(
-                      'text-base font-semibold text-text',
-                      heading === 'Verena' && 'text-xl',
+                      'text-title-md font-medium text-text',
+                      heading === 'Verena' && 'text-title-lg',
                     )}
                   >
                     {heading}
                   </p>
-                  <p className="text-sm text-textMuted">{subtitle}</p>
+                  {subtitle ? <p className="text-label-md text-textMuted">{subtitle}</p> : null}
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <IconButton variant="default" size="lg" aria-label="Search workspace">
+                  <IconButton variant="ghost" size="md" aria-label="Search workspace">
                     <Icon name="search" className="h-4 w-4" />
                   </IconButton>
                   {!rightPanelOpen && (
                     <IconButton
-                      variant="default"
-                      size="lg"
+                      variant="ghost"
+                      size="md"
                       onClick={() => setRightPanelOpen(true)}
                       aria-label="Show context panel"
                     >
@@ -118,7 +116,7 @@ export function AppShell() {
               </div>
             </header>
 
-            <main className="app-stage min-h-0 flex-1 p-4 md:p-6" id="main-content">
+            <main className="app-stage min-h-0 flex-1 p-5 md:p-8" id="main-content">
               <Outlet />
             </main>
           </section>

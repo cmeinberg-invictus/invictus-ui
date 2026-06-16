@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes } from 'react'
 import { cn } from '../../lib/cn'
 
-type IconButtonVariant = 'default' | 'filled' | 'tonal' | 'outlined' | 'glass'
+type IconButtonVariant = 'default' | 'filled' | 'tonal' | 'outlined' | 'ghost' | 'glass'
 type IconButtonSize = 'sm' | 'md' | 'lg'
 
 type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -23,6 +23,7 @@ const variantClasses: Record<IconButtonVariant, string> = {
     'bg-secondaryContainer text-onSecondaryContainer shadow-e1 hover:brightness-105 active:brightness-95',
   outlined:
     'border border-outlineVariant bg-surfaceContainer text-text shadow-none hover:bg-surfaceContainerHigh',
+  ghost: 'bg-transparent text-textMuted shadow-none hover:bg-surfaceContainerHigh hover:text-text',
   glass:
     'border border-outlineVariant bg-surfaceContainerLow text-text shadow-e1 hover:bg-surfaceContainer active:bg-surfaceContainerLow',
 }

@@ -25,7 +25,7 @@ export function NavItem({ to, label, icon, onNavigate }: NavItemProps) {
         cn(
           'state-layer flex h-11 items-center gap-2 rounded-pill px-4 text-sm font-medium transition focus-brand',
           isActive
-            ? 'bg-surfaceContainerHighest text-text shadow-e1'
+            ? 'bg-surfaceContainerHigh text-text'
             : 'text-textMuted hover:bg-surfaceContainer hover:text-text',
         )
       }

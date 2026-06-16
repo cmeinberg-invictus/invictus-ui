@@ -14,24 +14,24 @@ export function LeftNav({ onNavigate }: LeftNavProps) {
   const { activities } = useAppState()
 
   return (
-    <nav className="flex h-full flex-col gap-5 bg-transparent p-4" aria-label="Primary">
+    <nav className="flex h-full flex-col gap-6 bg-transparent p-4" aria-label="Primary">
       <div className="space-y-3">
         <div className="flex items-center gap-2">
           <img src={verenaLogoSymbol} alt="" aria-hidden="true" className="h-4 w-4" />
-          <p className="text-xl font-semibold text-text">Verena</p>
+          <p className="text-title-lg font-medium text-text">Verena</p>
         </div>
         <label className="composer-surface flex h-10 items-center gap-2 rounded-pill px-3">
           <Icon name="search" className="h-4 w-4 text-textMuted" />
           <input
             type="search"
             placeholder="Search"
-            className="w-full bg-transparent text-sm text-text outline-none placeholder:text-textMuted"
+            className="w-full bg-transparent text-body-md text-text outline-none placeholder:text-textMuted"
             aria-label="Search navigation"
           />
         </label>
       </div>
 
-      <Button className="w-full justify-start" variant="glass" onClick={onNavigate}>
+      <Button className="w-full justify-start" variant="secondary" onClick={onNavigate}>
         <Icon name="plus" className="h-4 w-4" />
         New session
       </Button>
@@ -44,30 +44,30 @@ export function LeftNav({ onNavigate }: LeftNavProps) {
       </div>
 
       <section className="min-h-0 flex-1 overflow-hidden" aria-labelledby="left-nav-recent">
-        <h2 id="left-nav-recent" className="mb-2 px-3 text-xs font-medium uppercase tracking-wide text-textMuted">
+        <h2 id="left-nav-recent" className="mb-2 px-3 text-label-md font-medium tracking-wide text-textMuted">
           Recents
         </h2>
-        <ul className="scroll-area max-h-full space-y-1 overflow-y-auto pr-1">
+        <ul className="scroll-area max-h-full divide-y divide-[color:var(--surface-border)] overflow-y-auto pr-1">
           {activities.map((activity) => (
-            <li key={activity.id}>
+            <li key={activity.id} className="py-1">
               <Link
                 to={`/activities/${activity.id}`}
                 onClick={onNavigate}
-                className="block rounded-xl px-3 py-2 text-sm text-textMuted transition hover:bg-surfaceContainer hover:text-text focus-brand"
+                className="block rounded-xl px-3 py-2 text-body-md text-textMuted transition hover:bg-surfaceContainer hover:text-text focus-brand"
               >
-                <p className="truncate font-medium text-text">{activity.title}</p>
-                <p className="truncate text-xs">{activity.updatedAt}</p>
+                <p className="truncate text-body-md font-medium text-text">{activity.title}</p>
+                <p className="truncate text-label-md">{activity.updatedAt}</p>
               </Link>
             </li>
           ))}
         </ul>
       </section>
 
-      <div className="surface-container mt-auto flex items-center gap-2 rounded-xl p-2.5">
+      <div className="mt-auto flex items-center gap-2 rounded-xl px-2.5 py-2 transition-colors hover:bg-surfaceContainer">
         <Avatar name="Jane Doe" size="sm" />
         <div>
-          <p className="text-sm font-semibold text-text">Jane Doe</p>
-          <p className="text-xs text-textMuted">JaneTech, Inc.</p>
+          <p className="text-body-md font-medium text-text">Jane Doe</p>
+          <p className="text-label-md text-textMuted">JaneTech, Inc.</p>
         </div>
       </div>
     </nav>

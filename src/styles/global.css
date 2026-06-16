@@ -46,71 +46,64 @@ a {
 
 .surface-container {
   background: var(--color-surface-container);
-  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 75%, transparent);
+  border: 1px solid var(--surface-border);
   box-shadow: var(--elevation-1);
 }
 
 .surface-container-high {
   background: var(--color-surface-container-high);
-  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 75%, transparent);
+  border: 1px solid var(--surface-border);
   box-shadow: var(--elevation-2);
 }
 
 .surface-container-low {
   background: var(--color-surface-container-low);
-  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 75%, transparent);
+  border: 1px solid var(--surface-border);
   box-shadow: var(--elevation-1);
 }
 
 .top-app-bar {
-  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--color-outline-variant) 72%, transparent);
+  background: color-mix(in srgb, var(--color-surface-container-lowest) 92%, transparent);
+  border-bottom: 1px solid var(--surface-border);
   backdrop-filter: blur(10px);
+  box-shadow: var(--topbar-shadow);
 }
 
 .app-stage {
   background:
     radial-gradient(
       circle at top,
-      color-mix(in srgb, var(--color-primary) 14%, transparent) 0%,
+      color-mix(in srgb, var(--color-primary) 8%, transparent) 0%,
       transparent 46%
     ),
     var(--color-background);
 }
 
 .shell-sidebar-left {
-  background: linear-gradient(
-    180deg,
-    var(--color-surface-container-high) 0%,
-    var(--color-surface-container-low) 100%
-  );
-  border-right: 1px solid color-mix(in srgb, var(--color-outline-variant) 72%, transparent);
+  background: linear-gradient(180deg, var(--sidebar-gradient-start) 0%, var(--sidebar-gradient-end) 100%);
+  border-right: 1px solid var(--surface-border);
   box-shadow:
-    inset -1px 0 0 color-mix(in srgb, var(--color-outline-variant) 45%, transparent),
-    8px 0 24px rgb(0 0 0 / 14%);
+    inset -1px 0 0 color-mix(in srgb, var(--surface-border) 55%, transparent),
+    var(--sidebar-drop-shadow-right);
 }
 
 .shell-sidebar-right {
-  background: linear-gradient(
-    180deg,
-    var(--color-surface-container-high) 0%,
-    var(--color-surface-container-low) 100%
-  );
-  border-left: 1px solid color-mix(in srgb, var(--color-outline-variant) 72%, transparent);
+  background: linear-gradient(180deg, var(--sidebar-gradient-start) 0%, var(--sidebar-gradient-end) 100%);
+  border-left: 1px solid var(--surface-border);
   box-shadow:
-    inset 1px 0 0 color-mix(in srgb, var(--color-outline-variant) 45%, transparent),
-    -8px 0 24px rgb(0 0 0 / 14%);
+    inset 1px 0 0 color-mix(in srgb, var(--surface-border) 55%, transparent),
+    var(--sidebar-drop-shadow-left);
 }
 
 .composer-surface {
   background: var(--color-surface-container-highest);
-  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 72%, transparent);
+  border: 1px solid var(--surface-border);
   box-shadow: var(--elevation-1);
 }
 
 .message-assistant {
   background: var(--color-surface-container-high);
-  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 72%, transparent);
+  border: 1px solid var(--surface-border);
   box-shadow: var(--elevation-1);
 }
 

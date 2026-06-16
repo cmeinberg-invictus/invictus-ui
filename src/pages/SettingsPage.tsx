@@ -8,18 +8,18 @@ export function SettingsPage() {
   return (
     <div className="space-y-4">
       <header>
-        <h1 className="text-3xl font-semibold text-text">User settings</h1>
-        <p className="text-sm text-textMuted">Customize your Verena workspace preferences.</p>
+        <h1 className="text-headline-sm font-medium text-text">User settings</h1>
+        <p className="text-body-md text-textMuted">Customize your Verena workspace preferences.</p>
       </header>
 
       <Panel className="flex items-center justify-between gap-4 p-4">
         <div>
-          <h2 className="text-sm font-semibold text-text">Theme</h2>
-          <p className="text-sm text-textMuted">
+          <h2 className="text-title-sm font-medium text-text">Theme</h2>
+          <p className="text-body-md text-textMuted">
             Current theme: <span className="capitalize">{theme}</span>
           </p>
         </div>
-        <Button onClick={toggleTheme} variant="secondary">
+        <Button onClick={toggleTheme} variant="tonal">
           Toggle theme
         </Button>
       </Panel>

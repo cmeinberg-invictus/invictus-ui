@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import { ButtonLink } from '../components/ui/ButtonLink'
 import { EmptyState } from '../components/ui/EmptyState'
 import { ChatView } from '../features/chat/ChatView'
 import { useAppState } from '../store/AppStateProvider'
@@ -41,12 +42,13 @@ export function ActivityConversationPage() {
           <h1 className="text-2xl font-semibold text-text">{activity.title}</h1>
           <p className="text-sm text-textMuted">{activity.excerpt}</p>
         </div>
-        <Link
+        <ButtonLink
           to="/activities"
-          className="state-layer focus-brand rounded-pill bg-secondaryContainer px-4 py-2 text-xs font-medium text-onSecondaryContainer shadow-e1"
+          variant="tonal"
+          size="sm"
         >
           All activities
-        </Link>
+        </ButtonLink>
       </header>
       <ChatView activityId={activity.id} />
     </div>

@@ -1,4 +1,5 @@
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import { ButtonLink } from '../components/ui/ButtonLink'
 import { EmptyState } from '../components/ui/EmptyState'
 import { Panel } from '../components/ui/Panel'
 import { useAppState } from '../store/AppStateProvider'
@@ -26,12 +27,13 @@ export function ArtifactDetailPage() {
             {artifact.type} - Updated {artifact.updatedAt}
           </p>
         </div>
-        <Link
+        <ButtonLink
           to="/artifacts"
-          className="state-layer focus-brand rounded-pill bg-secondaryContainer px-4 py-2 text-xs font-medium text-onSecondaryContainer shadow-e1"
+          variant="tonal"
+          size="sm"
         >
           Back to artifacts
-        </Link>
+        </ButtonLink>
       </header>
       <Panel className="p-4">
         <p className="text-sm text-textMuted">

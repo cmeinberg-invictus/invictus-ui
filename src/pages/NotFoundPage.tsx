@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { ButtonLink } from '../components/ui/ButtonLink'
 import { EmptyState } from '../components/ui/EmptyState'
 
 export function NotFoundPage() {
@@ -8,12 +8,13 @@ export function NotFoundPage() {
         title="Page not found"
         description="The page you requested does not exist or is no longer available."
       />
-      <Link
+      <ButtonLink
         to="/"
-        className="state-layer focus-brand inline-flex rounded-pill bg-secondaryContainer px-4 py-2 text-sm font-medium text-onSecondaryContainer shadow-e1"
+        variant="tonal"
+        size="md"
       >
         Go to Home
-      </Link>
+      </ButtonLink>
     </div>
   )
 }
