@@ -112,12 +112,18 @@ describe('Verena SPA', () => {
   test('composer submit appends a new message', async () => {
     const user = userEvent.setup()
     renderRoute('/activities/session-persistence')
+    const initialMessage = await screen.findByText(/manual multi-user browser repro is still pending/i)
+
+    expect(initialMessage.closest('article')).not.toHaveClass('chat-message-incoming')
 
     await user.type(screen.getByLabelText(/message/i), 'Please summarize the latest checks.')
     await user.click(screen.getByRole('button', { name: /^send$/i }))
 
-    expect(screen.getByText(/please summarize the latest checks\./i)).toBeInTheDocument()
-    expect(screen.getByText(/received\. i queued that update for activity/i)).toBeInTheDocument()
+    const userMessage = screen.getByText(/please summarize the latest checks\./i)
+    const assistantMessage = screen.getByText(/received\. i queued that update for activity/i)
+
+    await waitFor(() => expect(userMessage.closest('article')).toHaveClass('chat-message-incoming'))
+    expect(assistantMessage.closest('article')).toHaveClass('chat-message-incoming')
   })
 
   test('theme toggle updates data-theme attribute', async () => {

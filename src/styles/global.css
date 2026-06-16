@@ -256,6 +256,23 @@ a {
   box-shadow: var(--elevation-1);
 }
 
+.chat-message-incoming {
+  transform-origin: bottom center;
+  animation: chat-message-incoming var(--motion-duration-medium) var(--motion-easing-emphasized) both;
+}
+
+@keyframes chat-message-incoming {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .focus-brand {
   outline: none;
 }

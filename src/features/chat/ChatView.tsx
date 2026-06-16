@@ -1,4 +1,4 @@
-import { type FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Avatar } from "../../components/ui/Avatar";
 import { EmptyState } from "../../components/ui/EmptyState";
 import { Icon } from "../../components/ui/Icon";
@@ -20,6 +20,35 @@ export function ChatView({ activityId }: ChatViewProps) {
 	);
 	const [draft, setDraft] = useState("");
 	const [submitError, setSubmitError] = useState<string | null>(null);
+	const seenMessageIdsRef = useRef<{
+		activityId: string;
+		ids: Set<string>;
+	} | null>(null);
+	const [incomingMessages, setIncomingMessages] = useState<{
+		activityId: string;
+		ids: Set<string>;
+	}>({
+		activityId,
+		ids: new Set(),
+	});
+
+	useEffect(() => {
+		const currentIds = new Set(messages.map((message) => message.id));
+		const seenMessageIds = seenMessageIdsRef.current;
+
+		if (!seenMessageIds || seenMessageIds.activityId !== activityId) {
+			seenMessageIdsRef.current = { activityId, ids: currentIds };
+			setIncomingMessages({ activityId, ids: new Set() });
+			return;
+		}
+
+		const newMessageIds = messages
+			.filter((message) => !seenMessageIds.ids.has(message.id))
+			.map((message) => message.id);
+
+		seenMessageIdsRef.current = { activityId, ids: currentIds };
+		setIncomingMessages({ activityId, ids: new Set(newMessageIds) });
+	}, [activityId, messages]);
 
 	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -43,7 +72,14 @@ export function ChatView({ activityId }: ChatViewProps) {
 			>
 				{messages.length ? (
 					messages.map((message) => (
-						<MessageBubble key={message.id} message={message} />
+						<MessageBubble
+							key={message.id}
+							message={message}
+							isIncoming={
+								incomingMessages.activityId === activityId &&
+								incomingMessages.ids.has(message.id)
+							}
+						/>
 					))
 				) : (
 					<EmptyState
@@ -111,12 +147,18 @@ export function ChatView({ activityId }: ChatViewProps) {
 
 type MessageBubbleProps = {
 	message: Message;
+	isIncoming: boolean;
 };
 
-function MessageBubble({ message }: MessageBubbleProps) {
+function MessageBubble({ message, isIncoming }: MessageBubbleProps) {
 	if (message.role === "assistant") {
 		return (
-			<article className="flex w-fit max-w-[92%] items-end gap-3">
+			<article
+				className={cn(
+					"flex w-fit max-w-[92%] items-end gap-3",
+					isIncoming && "chat-message-incoming",
+				)}
+			>
 				<Avatar name="Verena" variant="agent" size="chat" />
 				<div className="message-assistant rounded-bl-sm rounded-br-xl rounded-tl-xl rounded-tr-xl px-4 py-3">
 					<p className="text-base leading-6 text-text">{message.content}</p>
@@ -128,7 +170,12 @@ function MessageBubble({ message }: MessageBubbleProps) {
 
 	if (message.role === "system") {
 		return (
-			<article className="mx-auto max-w-[90%] rounded-pill border border-warning/40 bg-warningContainer px-3 py-1.5 text-center">
+			<article
+				className={cn(
+					"mx-auto max-w-[90%] rounded-pill border border-warning/40 bg-warningContainer px-3 py-1.5 text-center",
+					isIncoming && "chat-message-incoming",
+				)}
+			>
 				<p className="text-xs text-onWarningContainer">{message.content}</p>
 			</article>
 		);
@@ -138,6 +185,7 @@ function MessageBubble({ message }: MessageBubbleProps) {
 		<article
 			className={cn(
 				"message-user ml-auto w-fit max-w-[85%] rounded-bl-xl rounded-br-sm rounded-tl-xl rounded-tr-xl px-4 py-3",
+				isIncoming && "chat-message-incoming",
 			)}
 		>
 			<p className="text-base leading-6">{message.content}</p>
