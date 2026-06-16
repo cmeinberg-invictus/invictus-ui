@@ -125,3 +125,4 @@ downloads/
 # Misc
 .envrc
 .direnv/
+temp-verena/

@@ -1,0 +1,44 @@
+import { Link, useParams } from 'react-router-dom'
+import { EmptyState } from '../components/ui/EmptyState'
+import { Panel } from '../components/ui/Panel'
+import { useAppState } from '../store/AppStateProvider'
+
+export function ArtifactDetailPage() {
+  const { artifactId } = useParams()
+  const { artifacts } = useAppState()
+
+  const artifact = artifacts.find((item) => item.id === artifactId)
+  if (!artifact) {
+    return (
+      <EmptyState
+        title="Artifact not found"
+        description="The requested artifact is unavailable."
+      />
+    )
+  }
+
+  return (
+    <div className="space-y-4">
+      <header className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-text">{artifact.title}</h1>
+          <p className="text-sm text-textMuted">
+            {artifact.type} - Updated {artifact.updatedAt}
+          </p>
+        </div>
+        <Link
+          to="/artifacts"
+          className="rounded-md border border-border px-3 py-2 text-xs font-medium text-text hover:bg-surfaceAlt"
+        >
+          Back to artifacts
+        </Link>
+      </header>
+      <Panel className="p-4">
+        <p className="text-sm text-textMuted">
+          This is a placeholder artifact view for the initial scaffold. In a production flow this
+          page would render the full artifact content and revision history.
+        </p>
+      </Panel>
+    </div>
+  )
+}

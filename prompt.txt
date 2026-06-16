@@ -1,0 +1,18 @@
+help me start this app:
+
+# Verena by Invictus AI
+
+SPA for a chat app.
+Navigation in the left side
+Conversation and chat UI in the center
+Items on the right side (e.g. background tasks, chat related artifacts...)
+
+Layout reference attached.
+
+Initial menu items:
+- Home
+- Activities
+-- List of activities
+- Attifacts
+-- List of activities
+- User/settings
