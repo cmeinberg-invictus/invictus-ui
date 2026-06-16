@@ -14,8 +14,8 @@ export function LeftNav({ onNavigate }: LeftNavProps) {
   const { activities } = useAppState()
 
   return (
-    <nav className="flex h-full flex-col gap-6 bg-transparent p-4" aria-label="Primary">
-      <div className="space-y-3">
+    <nav className="flex h-full min-h-0 flex-col gap-6 overflow-hidden bg-transparent p-4" aria-label="Primary">
+      <div className="shrink-0 space-y-3">
         <div className="flex items-center gap-2">
           <img src={verenaLogoSymbol} alt="" aria-hidden="true" className="h-4 w-4" />
           <p className="type-title text-title-lg font-medium text-text">Verena</p>
@@ -31,12 +31,12 @@ export function LeftNav({ onNavigate }: LeftNavProps) {
         </label>
       </div>
 
-      <Button className="w-full justify-start" variant="secondary" onClick={onNavigate}>
+      <Button className="w-full shrink-0 justify-start" variant="secondary" onClick={onNavigate}>
         <Icon name="plus" className="h-4 w-4" />
         New session
       </Button>
 
-      <div className="space-y-1">
+      <div className="shrink-0 space-y-1">
         <NavItem to="/" label="Home" icon="spark" onNavigate={onNavigate} />
         <NavItem to="/activities" label="Activities" icon="activities" onNavigate={onNavigate} />
         <NavItem to="/artifacts" label="Artifacts" icon="artifacts" onNavigate={onNavigate} />
@@ -63,7 +63,7 @@ export function LeftNav({ onNavigate }: LeftNavProps) {
         </ul>
       </section>
 
-      <div className="mt-auto flex items-center gap-2 rounded-xl px-2.5 py-2 transition-colors hover:bg-surfaceContainer">
+      <div className="mt-auto flex shrink-0 items-center gap-2 rounded-xl px-2.5 py-2 transition-colors hover:bg-surfaceContainer">
         <Avatar name="Jane Doe" size="sm" />
         <div>
           <p className="text-body-md font-medium text-text">Jane Doe</p>

@@ -61,20 +61,20 @@ export function AppShell() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-text">
-      <div className="grid min-h-screen grid-cols-1 md:grid-cols-[18rem_minmax(0,1fr)]">
-        <aside className="shell-sidebar-left hidden md:block">
+    <div className="h-screen overflow-hidden bg-background text-text">
+      <div className="grid h-screen min-h-0 grid-cols-1 overflow-hidden md:grid-cols-[18rem_minmax(0,1fr)]">
+        <aside className="shell-sidebar-left hidden h-screen overflow-hidden md:block">
           <LeftNav />
         </aside>
 
         <div
           className={cn(
-            'grid min-h-screen grid-cols-1',
+            'grid h-screen min-h-0 grid-cols-1 overflow-hidden',
             rightPanelOpen && 'xl:grid-cols-[minmax(0,1fr)_24rem]',
           )}
         >
-          <section className="flex min-h-screen flex-col">
-            <header className="top-app-bar sticky top-0 z-20 px-4 py-4">
+          <section className="flex h-screen min-h-0 flex-col overflow-hidden">
+            <header className="top-app-bar z-20 shrink-0 px-4 py-4">
               <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3">
                 <IconButton
                   className="md:hidden"
@@ -116,13 +116,13 @@ export function AppShell() {
               </div>
             </header>
 
-            <main className="app-stage min-h-0 flex-1 p-5 md:p-8" id="main-content">
+            <main className="app-stage scroll-area min-h-0 flex-1 overflow-y-auto p-5 md:p-8" id="main-content">
               <Outlet />
             </main>
           </section>
 
           {rightPanelOpen && (
-            <div className="shell-sidebar-right hidden xl:block">
+            <div className="shell-sidebar-right hidden h-screen overflow-hidden xl:block">
               <RightPanel activityId={activityId ?? null} onClose={() => setRightPanelOpen(false)} />
             </div>
           )}
@@ -131,7 +131,7 @@ export function AppShell() {
 
       {isMobileNavOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden" role="dialog" aria-modal="true">
-          <div className="shell-sidebar-left w-72">
+          <div className="shell-sidebar-left h-screen w-72 overflow-hidden">
             <LeftNav onNavigate={() => setIsMobileNavOpen(false)} />
           </div>
           <button

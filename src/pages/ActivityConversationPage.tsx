@@ -36,8 +36,8 @@ export function ActivityConversationPage() {
   }
 
   return (
-    <div className="flex h-full min-h-[60vh] flex-col gap-3">
-      <header className="flex items-center justify-between">
+    <div className="flex h-full min-h-0 flex-col gap-3">
+      <header className="flex shrink-0 items-center justify-between">
         <div>
           <h1 className="type-headline text-headline-sm font-medium text-text">{activity.title}</h1>
           <p className="text-body-md text-textMuted">{activity.excerpt}</p>

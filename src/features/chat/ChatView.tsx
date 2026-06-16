@@ -34,7 +34,7 @@ export function ChatView({ activityId }: ChatViewProps) {
 
   return (
     <Panel className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl bg-surfaceContainerLow">
-      <div className="scroll-area flex-1 space-y-3 overflow-y-auto px-4 pb-6 pt-6" aria-live="polite">
+      <div className="scroll-area min-h-0 flex-1 space-y-3 overflow-y-auto px-4 pb-6 pt-6" aria-live="polite">
         {messages.length ? (
           messages.map((message) => <MessageBubble key={message.id} message={message} />)
         ) : (
@@ -45,7 +45,7 @@ export function ChatView({ activityId }: ChatViewProps) {
         )}
       </div>
 
-      <form className="relative z-20 px-3 pb-4 pt-2" onSubmit={onSubmit}>
+      <form className="relative z-20 shrink-0 px-3 pb-4 pt-2" onSubmit={onSubmit}>
         <label htmlFor="chat-input" className="sr-only">
           Message
         </label>

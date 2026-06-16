@@ -15,8 +15,8 @@ export function RightPanel({ activityId, onClose }: RightPanelProps) {
   const contextualArtifacts = getArtifactsByActivity(activityId)
 
   return (
-    <aside className="flex h-full flex-col bg-transparent p-4">
-      <div className="mb-4 flex items-center justify-between">
+    <aside className="flex h-full min-h-0 flex-col overflow-hidden bg-transparent p-4">
+      <div className="mb-4 flex shrink-0 items-center justify-between">
         <div>
           <h2 className="type-title text-title-sm font-medium text-text">Context panel</h2>
           <p className="text-label-md text-textMuted">Artifacts and workflow cards</p>
@@ -26,7 +26,7 @@ export function RightPanel({ activityId, onClose }: RightPanelProps) {
         </IconButton>
       </div>
 
-      <div className="scroll-area space-y-5 overflow-y-auto pr-1">
+      <div className="scroll-area min-h-0 flex-1 space-y-5 overflow-y-auto pr-1">
         <BackgroundTasks activityId={activityId} />
 
         <section aria-labelledby="artifact-title" className="space-y-2">
