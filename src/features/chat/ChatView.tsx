@@ -1,4 +1,11 @@
-import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import {
+	type FormEvent,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { Avatar } from "../../components/ui/Avatar";
 import { EmptyState } from "../../components/ui/EmptyState";
 import { Icon } from "../../components/ui/Icon";
@@ -12,6 +19,12 @@ type ChatViewProps = {
 	activityId: string;
 };
 
+const NEW_MESSAGE_SCROLL_THRESHOLD = 48;
+
+const isScrollAreaNearBottom = (element: HTMLDivElement) =>
+	element.scrollHeight - element.scrollTop - element.clientHeight <=
+	NEW_MESSAGE_SCROLL_THRESHOLD;
+
 export function ChatView({ activityId }: ChatViewProps) {
 	const { getMessagesByActivity, sendMessage } = useAppState();
 	const messages = useMemo(
@@ -20,6 +33,9 @@ export function ChatView({ activityId }: ChatViewProps) {
 	);
 	const [draft, setDraft] = useState("");
 	const [submitError, setSubmitError] = useState<string | null>(null);
+	const scrollAreaRef = useRef<HTMLDivElement>(null);
+	const isNearBottomRef = useRef(true);
+	const [hasNewMessagesBelow, setHasNewMessagesBelow] = useState(false);
 	const seenMessageIdsRef = useRef<{
 		activityId: string;
 		ids: Set<string>;
@@ -32,6 +48,41 @@ export function ChatView({ activityId }: ChatViewProps) {
 		ids: new Set(),
 	});
 
+	const scrollToLatestMessages = useCallback((behavior: ScrollBehavior = "smooth") => {
+		const scrollArea = scrollAreaRef.current;
+
+		if (!scrollArea) {
+			return;
+		}
+
+		if (typeof scrollArea.scrollTo === "function") {
+			scrollArea.scrollTo({
+				top: scrollArea.scrollHeight,
+				behavior,
+			});
+		} else {
+			scrollArea.scrollTop = scrollArea.scrollHeight;
+		}
+
+		isNearBottomRef.current = true;
+		setHasNewMessagesBelow(false);
+	}, []);
+
+	const updateScrollPosition = useCallback(() => {
+		const scrollArea = scrollAreaRef.current;
+
+		if (!scrollArea) {
+			return;
+		}
+
+		const isNearBottom = isScrollAreaNearBottom(scrollArea);
+		isNearBottomRef.current = isNearBottom;
+
+		if (isNearBottom) {
+			setHasNewMessagesBelow(false);
+		}
+	}, []);
+
 	useEffect(() => {
 		const currentIds = new Set(messages.map((message) => message.id));
 		const seenMessageIds = seenMessageIdsRef.current;
@@ -39,6 +90,8 @@ export function ChatView({ activityId }: ChatViewProps) {
 		if (!seenMessageIds || seenMessageIds.activityId !== activityId) {
 			seenMessageIdsRef.current = { activityId, ids: currentIds };
 			setIncomingMessages({ activityId, ids: new Set() });
+			isNearBottomRef.current = true;
+			setHasNewMessagesBelow(false);
 			return;
 		}
 
@@ -48,7 +101,18 @@ export function ChatView({ activityId }: ChatViewProps) {
 
 		seenMessageIdsRef.current = { activityId, ids: currentIds };
 		setIncomingMessages({ activityId, ids: new Set(newMessageIds) });
-	}, [activityId, messages]);
+
+		if (!newMessageIds.length) {
+			return;
+		}
+
+		if (isNearBottomRef.current) {
+			window.requestAnimationFrame(() => scrollToLatestMessages());
+			return;
+		}
+
+		setHasNewMessagesBelow(true);
+	}, [activityId, messages, scrollToLatestMessages]);
 
 	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -67,8 +131,10 @@ export function ChatView({ activityId }: ChatViewProps) {
 	return (
 		<Panel className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl bg-surfaceContainerLow">
 			<div
+				ref={scrollAreaRef}
 				className="scroll-area min-h-0 flex-1 space-y-3 overflow-y-auto px-4 pb-6 pt-6"
 				aria-live="polite"
+				onScroll={updateScrollPosition}
 			>
 				{messages.length ? (
 					messages.map((message) => (
@@ -88,6 +154,18 @@ export function ChatView({ activityId }: ChatViewProps) {
 					/>
 				)}
 			</div>
+
+			{hasNewMessagesBelow ? (
+				<IconButton
+					variant="glass"
+					size="lg"
+					className="absolute bottom-24 left-1/2 z-10 -translate-x-1/2 shadow-e4"
+					aria-label="Scroll to latest messages"
+					onClick={() => scrollToLatestMessages()}
+				>
+					<Icon name="chevronDown" className="h-5 w-5" />
+				</IconButton>
+			) : null}
 
 			<form
 				className="relative z-20 shrink-0 px-3 pb-4 pt-2"

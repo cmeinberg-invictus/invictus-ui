@@ -1,7 +1,7 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { RouterProvider } from 'react-router-dom'
-import { beforeEach, describe, expect, test } from 'vitest'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { AppProviders } from './AppProviders'
 import { createTestRouter } from './router'
 
@@ -124,6 +124,40 @@ describe('Verena SPA', () => {
 
     await waitFor(() => expect(userMessage.closest('article')).toHaveClass('chat-message-incoming'))
     expect(assistantMessage.closest('article')).toHaveClass('chat-message-incoming')
+  })
+
+  test('shows a scroll-to-latest button when new messages arrive below the viewport', async () => {
+    const user = userEvent.setup()
+    renderRoute('/activities/session-persistence')
+    const initialMessage = await screen.findByText(/manual multi-user browser repro is still pending/i)
+    const scrollArea = initialMessage.closest('.scroll-area') as HTMLDivElement | null
+
+    if (!scrollArea) {
+      throw new Error('Expected chat scroll area to exist')
+    }
+
+    Object.defineProperties(scrollArea, {
+      clientHeight: { configurable: true, value: 300 },
+      scrollHeight: { configurable: true, value: 1000 },
+    })
+    scrollArea.scrollTop = 100
+    scrollArea.scrollTo = vi.fn()
+    fireEvent.scroll(scrollArea)
+
+    await user.type(screen.getByLabelText(/message/i), 'Add the latest update.')
+    await user.click(screen.getByRole('button', { name: /^send$/i }))
+
+    const scrollButton = await screen.findByRole('button', { name: /scroll to latest messages/i })
+
+    await user.click(scrollButton)
+
+    expect(scrollArea.scrollTo).toHaveBeenCalledWith({
+      top: 1000,
+      behavior: 'smooth',
+    })
+    await waitFor(() =>
+      expect(screen.queryByRole('button', { name: /scroll to latest messages/i })).not.toBeInTheDocument(),
+    )
   })
 
   test('theme toggle updates data-theme attribute', async () => {
