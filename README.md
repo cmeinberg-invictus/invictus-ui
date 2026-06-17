@@ -46,21 +46,22 @@ chat experience. It should integrate with:
 - `/Users/claudiomeinberg/Development/regprofile` only through backend-produced
   results and artifacts.
 
-The current mock-first state should be replaced incrementally with backend API
-and WebSocket adapters. Preserve the existing three-panel product shape while
-adding live workflow status to the background task panel and durable generated
-profiles to the artifacts area.
+The app talks to the `vchat` backend over REST + WebSocket. Authentication uses
+JWT: sign in (or register) on `/login`, and tokens are stored in `localStorage`
+with automatic refresh-and-retry. Server state is managed with TanStack Query,
+validated with Zod, and chat replies / artifacts render markdown with
+syntax-highlighted code.
 
-Backend-backed mode is enabled when an access token is provided:
+Configure the backend endpoints (defaults shown):
 
 ```bash
 VITE_API_URL=http://localhost:8000/api
 VITE_WS_URL=ws://localhost:8000/ws
-VITE_AUTH_TOKEN=<jwt-access-token>
 ```
 
-Without `VITE_AUTH_TOKEN`, the app keeps using local mock data so the UI remains
-usable during incremental backend integration.
+Start the `vchat` Django backend (and the Temporal worker for RegProfile
+workflows), then run the dev server and sign in. The `src/data/mock.ts`
+fixtures are retained for tests only.
 
 ### Build
 

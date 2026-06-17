@@ -165,7 +165,21 @@ export function AppShell() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <IconButton variant="ghost" size="md" aria-label="Search workspace">
+                  <IconButton
+                    variant="ghost"
+                    size="md"
+                    aria-label="Search workspace"
+                    onClick={() => {
+                      const navSearch = document.querySelector<HTMLInputElement>(
+                        '.shell-sidebar-left input[type="search"]',
+                      )
+                      if (navSearch) {
+                        navSearch.focus()
+                      } else {
+                        openMobileNav()
+                      }
+                    }}
+                  >
                     <Icon name="search" className="h-4 w-4" />
                   </IconButton>
                   {!rightPanelOpen && (

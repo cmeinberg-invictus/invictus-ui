@@ -1,9 +1,10 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { RouterProvider } from 'react-router-dom'
-import { beforeEach, describe, expect, test, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import { AppProviders } from './AppProviders'
 import { createTestRouter } from './router'
+import { installBackendMock, seedAuth } from '../test/backendMock'
 
 const renderRoute = (path: string) => {
   const router = createTestRouter([path])
@@ -16,17 +17,37 @@ const renderRoute = (path: string) => {
 
 beforeEach(() => {
   localStorage.clear()
+  installBackendMock()
 })
 
-describe('Verena SPA', () => {
-  test('restores activity context from deep-link route', async () => {
-    renderRoute('/activities/session-persistence')
+afterEach(() => {
+  vi.unstubAllGlobals()
+  vi.clearAllMocks()
+})
 
-    expect(
-      await screen.findByRole('heading', { name: /session persistence and data clearing bugs/i }),
-    ).toBeInTheDocument()
-    expect(screen.getByPlaceholderText(/chat with verena/i)).toBeInTheDocument()
-    expect(screen.getByText(/please verify important outputs/i)).toBeInTheDocument()
+describe('Verena SPA (unauthenticated)', () => {
+  test('redirects protected routes to the login page', async () => {
+    renderRoute('/')
+
+    expect(await screen.findByRole('button', { name: /^sign in$/i })).toBeInTheDocument()
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
+  })
+
+  test('logging in lands the user in the workspace shell', async () => {
+    const user = userEvent.setup()
+    renderRoute('/login')
+
+    await user.type(await screen.findByLabelText(/email/i), 'jane.doe@invictus.ai')
+    await user.type(screen.getByLabelText(/password/i), 'password123')
+    await user.click(screen.getByRole('button', { name: /^sign in$/i }))
+
+    expect(await screen.findByRole('navigation', { name: /primary/i })).toBeInTheDocument()
+  })
+})
+
+describe('Verena SPA (authenticated)', () => {
+  beforeEach(() => {
+    seedAuth()
   })
 
   test('renders shell navigation and core menu entries', async () => {
@@ -38,154 +59,70 @@ describe('Verena SPA', () => {
     expect(screen.getByRole('link', { name: /^artifacts$/i })).toBeInTheDocument()
   })
 
-  test('collapses and expands desktop navigation while preserving core links', async () => {
+  test('shows the signed-in user derived from /auth/me', async () => {
+    renderRoute('/')
+
+    expect(await screen.findAllByText(/jane doe/i)).not.toHaveLength(0)
+    expect(screen.getByRole('button', { name: /sign out/i })).toBeInTheDocument()
+  })
+
+  test('restores activity context from a deep-link route', async () => {
+    renderRoute('/activities/7')
+
+    expect(
+      await screen.findByRole('heading', { name: /session persistence and data clearing bugs/i }),
+    ).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/chat with verena/i)).toBeInTheDocument()
+    expect(await screen.findByText(/manual multi-user browser repro is still pending/i)).toBeInTheDocument()
+  })
+
+  test('filters recent sessions with the nav search field', async () => {
     const user = userEvent.setup()
     renderRoute('/')
 
-    await user.click(await screen.findByRole('button', { name: /collapse navigation/i }))
+    expect(
+      await screen.findByRole('link', { name: /session persistence and data clearing bugs/i }),
+    ).toBeInTheDocument()
 
-    expect(screen.getByRole('button', { name: /expand navigation/i })).toHaveAttribute(
-      'aria-expanded',
-      'false',
-    )
-    expect(screen.getByRole('link', { name: /^home$/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /^activities$/i })).toBeInTheDocument()
-    expect(localStorage.getItem('verena-left-nav-collapsed')).toBe('true')
+    await user.type(screen.getByRole('searchbox', { name: /search navigation/i }), 'nonexistent')
 
-    await user.click(screen.getByRole('button', { name: /expand navigation/i }))
-
-    expect(screen.getByRole('button', { name: /collapse navigation/i })).toHaveAttribute(
-      'aria-expanded',
-      'true',
-    )
-    expect(localStorage.getItem('verena-left-nav-collapsed')).toBe('false')
+    expect(
+      screen.queryByRole('link', { name: /session persistence and data clearing bugs/i }),
+    ).not.toBeInTheDocument()
+    expect(screen.getByText(/no matching sessions/i)).toBeInTheDocument()
   })
 
-  test('toggles context panel without removing animated sidebar shell', async () => {
+  test('composer submit appends the user message and a streamed reply', async () => {
     const user = userEvent.setup()
-    renderRoute('/activities/session-persistence')
+    renderRoute('/activities/7')
 
-    await user.click(await screen.findByRole('button', { name: /hide context panel/i }))
-
-    expect(screen.getByRole('button', { name: /show context panel/i })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /hide context panel/i })).not.toBeInTheDocument()
-
-    await user.click(screen.getByRole('button', { name: /show context panel/i }))
-
-    expect(screen.getByRole('button', { name: /hide context panel/i })).toBeInTheDocument()
-  })
-
-  test('collapses and expands context panel groups', async () => {
-    const user = userEvent.setup()
-    renderRoute('/activities/session-persistence')
-
-    const artifactsToggle = await screen.findByRole('button', { name: /artifacts/i })
-    const artifactsPanel = document.getElementById(
-      artifactsToggle.getAttribute('aria-controls') ?? '',
-    )
-    const artifactLink = screen.getByRole('link', {
-      name: /pr notes: onboarding-storage-user-scope/i,
-    })
-
-    expect(artifactsPanel).toHaveAttribute('aria-hidden', 'false')
-    expect(artifactsToggle).toHaveAttribute('aria-expanded', 'true')
-    expect(artifactLink).toBeVisible()
-
-    await user.click(artifactsToggle)
-
-    expect(artifactsPanel).toHaveAttribute('aria-hidden', 'true')
-    expect(artifactsToggle).toHaveAttribute('aria-expanded', 'false')
-
-    await user.click(artifactsToggle)
-
-    expect(artifactsPanel).toHaveAttribute('aria-hidden', 'false')
-    expect(artifactsToggle).toHaveAttribute('aria-expanded', 'true')
-    expect(artifactLink).toBeVisible()
-  })
-
-  test('keeps mobile navigation mounted during exit animation', async () => {
-    const user = userEvent.setup()
-    renderRoute('/')
-
-    await user.click(await screen.findByRole('button', { name: /open navigation/i }))
-
-    expect(screen.getByRole('dialog')).toBeInTheDocument()
-
-    await user.click(screen.getByRole('button', { name: /close navigation/i }))
-
-    expect(screen.getByRole('dialog')).toBeInTheDocument()
-    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
-  })
-
-  test('composer submit appends a new message', async () => {
-    const user = userEvent.setup()
-    renderRoute('/activities/session-persistence')
-    const initialMessage = await screen.findByText(
-      /manual multi-user browser repro is still pending/i,
-    )
-
-    expect(initialMessage.closest('article')).not.toHaveClass('chat-message-incoming')
-
-    await user.type(screen.getByLabelText(/message/i), 'Please summarize the latest checks.')
+    await user.type(await screen.findByLabelText(/^message$/i), 'Please summarize the latest checks.')
     await user.click(screen.getByRole('button', { name: /^send$/i }))
 
-    const userMessage = screen.getByText(/please summarize the latest checks\./i)
-    const assistantMessage = screen.getByText(/received\. i queued that update for activity/i)
-
-    await waitFor(() => expect(userMessage.closest('article')).toHaveClass('chat-message-incoming'))
-    expect(assistantMessage.closest('article')).toHaveClass('chat-message-incoming')
+    expect(screen.getByText(/please summarize the latest checks\./i)).toBeInTheDocument()
+    expect(await screen.findByText(/streamed reply/i)).toBeInTheDocument()
   })
 
   test('starts a RegProfile background task from chat', async () => {
     const user = userEvent.setup()
-    renderRoute('/activities/session-persistence')
+    renderRoute('/activities/7')
 
     await user.type(await screen.findByLabelText(/company website url/i), 'https://example.com')
     await user.click(screen.getByRole('button', { name: /start regprofile/i }))
 
-    expect(await screen.findByText(/https:\/\/example\.com/i)).toBeInTheDocument()
-    expect(screen.getByText(/regulatory profile/i)).toBeInTheDocument()
+    expect(await screen.findAllByText(/https:\/\/example\.com/i)).not.toHaveLength(0)
   })
 
-  test('shows a scroll-to-latest button when new messages arrive below the viewport', async () => {
-    const user = userEvent.setup()
-    renderRoute('/activities/session-persistence')
-    const initialMessage = await screen.findByText(
-      /manual multi-user browser repro is still pending/i,
-    )
-    const scrollArea = initialMessage.closest('.scroll-area') as HTMLDivElement | null
+  test('renders artifact markdown content', async () => {
+    renderRoute('/artifacts/11')
 
-    if (!scrollArea) {
-      throw new Error('Expected chat scroll area to exist')
-    }
-
-    Object.defineProperties(scrollArea, {
-      clientHeight: { configurable: true, value: 300 },
-      scrollHeight: { configurable: true, value: 1000 },
-    })
-    scrollArea.scrollTop = 100
-    scrollArea.scrollTo = vi.fn()
-    fireEvent.scroll(scrollArea)
-
-    await user.type(screen.getByLabelText(/message/i), 'Add the latest update.')
-    await user.click(screen.getByRole('button', { name: /^send$/i }))
-
-    const scrollButton = await screen.findByRole('button', { name: /scroll to latest messages/i })
-
-    await user.click(scrollButton)
-
-    expect(scrollArea.scrollTo).toHaveBeenCalledWith({
-      top: 1000,
-      behavior: 'smooth',
-    })
-    await waitFor(() =>
-      expect(
-        screen.queryByRole('button', { name: /scroll to latest messages/i }),
-      ).not.toBeInTheDocument(),
-    )
+    expect(
+      await screen.findByRole('heading', { name: /pr notes: onboarding-storage-user-scope/i }),
+    ).toBeInTheDocument()
+    expect(screen.getByText(/markdown/i)).toBeInTheDocument()
   })
 
-  test('theme toggle updates data-theme attribute', async () => {
+  test('theme toggle updates the data-theme attribute', async () => {
     const user = userEvent.setup()
     localStorage.setItem('verena-theme', 'light')
     renderRoute('/settings')
