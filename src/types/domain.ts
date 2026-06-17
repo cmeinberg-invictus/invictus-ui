@@ -11,8 +11,9 @@ export type Artifact = {
   id: string
   activityId: string
   title: string
-  type: 'spec' | 'notes' | 'checklist'
+  type: 'spec' | 'notes' | 'checklist' | 'regulatory_profile'
   updatedAt: string
+  content?: string
 }
 
 export type Message = {
@@ -23,7 +24,7 @@ export type Message = {
   timestamp: string
 }
 
-export type TaskStatus = 'running' | 'completed' | 'failed'
+export type TaskStatus = 'queued' | 'running' | 'waiting_for_answers' | 'completed' | 'failed'
 
 export type BackgroundTask = {
   id: string
@@ -32,4 +33,7 @@ export type BackgroundTask = {
   status: TaskStatus
   subtitle: string
   updatedAt: string
+  executionId?: string
+  questions?: Array<{ id?: string; question?: string; label?: string; text?: string }>
+  error?: string
 }

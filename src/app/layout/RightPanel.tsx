@@ -29,6 +29,7 @@ const artifactTileClasses: Record<Artifact['type'], string> = {
   notes: 'bg-primaryContainer text-onPrimaryContainer',
   checklist: 'bg-successContainer text-onSuccessContainer',
   spec: 'bg-secondaryContainer text-onSecondaryContainer',
+  regulatory_profile: 'bg-secondaryContainer text-onSecondaryContainer',
 }
 
 function ContextPanelGroup({
@@ -173,7 +174,9 @@ export function RightPanel({ activityId, onClose }: RightPanelProps) {
           <div className="space-y-2">
             <Card variant="reasoning" className="space-y-2 p-3">
               <p className="type-label text-label-md font-medium">Multi actions</p>
-              <p className="text-body-md font-medium">Background sync and evidence extraction running.</p>
+              <p className="text-body-md font-medium">
+                Background sync and evidence extraction running.
+              </p>
               <div className="flex items-center gap-2 text-label-md">
                 <Icon name="clock" className="h-3.5 w-3.5" />
                 Updated moments ago

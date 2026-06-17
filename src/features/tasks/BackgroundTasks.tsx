@@ -33,6 +33,17 @@ export function BackgroundTasks({ activityId, variant = 'standalone' }: Backgrou
                 <p className="text-body-md font-medium text-text">{task.title}</p>
                 <p className="text-label-md text-textMuted">{task.subtitle}</p>
                 <p className="text-label-md text-textMuted">{task.updatedAt}</p>
+                {task.status === 'waiting_for_answers' && task.questions?.length ? (
+                  <p className="text-label-md text-text">
+                    {task.questions.length} clarification question
+                    {task.questions.length === 1 ? '' : 's'} ready.
+                  </p>
+                ) : null}
+                {task.error ? (
+                  <p className="text-label-md text-error" role="status">
+                    {task.error}
+                  </p>
+                ) : null}
               </div>
               <Badge status={task.status} />
             </div>

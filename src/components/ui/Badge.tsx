@@ -9,13 +9,17 @@ type BadgeProps = {
 }
 
 const styleByStatus: Record<TaskStatus, string> = {
+  queued: 'bg-surfaceContainerHigh text-textMuted',
   running: 'bg-warningContainer text-onWarningContainer',
+  waiting_for_answers: 'bg-secondaryContainer text-onSecondaryContainer',
   completed: 'bg-successContainer text-onSuccessContainer',
   failed: 'bg-errorContainer text-onErrorContainer',
 }
 
 const textByStatus: Record<TaskStatus, string> = {
+  queued: 'Queued',
   running: 'Running',
+  waiting_for_answers: 'Needs input',
   completed: 'Completed',
   failed: 'Failed',
 }
@@ -26,12 +30,7 @@ const roleStyleByEmphasis: Record<'low' | 'medium' | 'high', string> = {
   high: 'bg-primary text-onPrimary',
 }
 
-export function Badge({
-  status,
-  label,
-  channel = 'system',
-  emphasis = 'medium',
-}: BadgeProps) {
+export function Badge({ status, label, channel = 'system', emphasis = 'medium' }: BadgeProps) {
   const roleClass =
     channel === 'agent'
       ? roleStyleByEmphasis[emphasis]

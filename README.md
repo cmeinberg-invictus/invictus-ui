@@ -34,6 +34,34 @@ npm install
 npm run dev
 ```
 
+### Planned Backend Integration
+
+This repository is the planned canonical frontend for the multi-repo RegProfile
+chat experience. It should integrate with:
+
+- `/Users/claudiomeinberg/Development/vchat/backend` for authentication, chat,
+  conversations, workflow APIs, artifacts, and WebSocket events.
+- `/Users/claudiomeinberg/Development/regprofile-temporal` indirectly through
+  `vchat`; the frontend should not call Temporal directly.
+- `/Users/claudiomeinberg/Development/regprofile` only through backend-produced
+  results and artifacts.
+
+The current mock-first state should be replaced incrementally with backend API
+and WebSocket adapters. Preserve the existing three-panel product shape while
+adding live workflow status to the background task panel and durable generated
+profiles to the artifacts area.
+
+Backend-backed mode is enabled when an access token is provided:
+
+```bash
+VITE_API_URL=http://localhost:8000/api
+VITE_WS_URL=ws://localhost:8000/ws
+VITE_AUTH_TOKEN=<jwt-access-token>
+```
+
+Without `VITE_AUTH_TOKEN`, the app keeps using local mock data so the UI remains
+usable during incremental backend integration.
+
 ### Build
 
 ```bash

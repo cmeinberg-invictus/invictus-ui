@@ -19,6 +19,12 @@ describe('Material primitives', () => {
     expect(screen.getByText(/verena\+/i)).toBeInTheDocument()
   })
 
+  test('renders workflow waiting status badge', () => {
+    render(<Badge status="waiting_for_answers" />)
+
+    expect(screen.getByText(/needs input/i)).toBeInTheDocument()
+  })
+
   test('renders quick-action chip as interactive control', () => {
     render(<Chip icon="spark">Review evidence</Chip>)
 

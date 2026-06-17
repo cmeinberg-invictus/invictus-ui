@@ -11,10 +11,7 @@ export function ArtifactDetailPage() {
   const artifact = artifacts.find((item) => item.id === artifactId)
   if (!artifact) {
     return (
-      <EmptyState
-        title="Artifact not found"
-        description="The requested artifact is unavailable."
-      />
+      <EmptyState title="Artifact not found" description="The requested artifact is unavailable." />
     )
   }
 
@@ -27,19 +24,20 @@ export function ArtifactDetailPage() {
             {artifact.type} - Updated {artifact.updatedAt}
           </p>
         </div>
-        <ButtonLink
-          to="/artifacts"
-          variant="tonal"
-          size="sm"
-        >
+        <ButtonLink to="/artifacts" variant="tonal" size="sm">
           Back to artifacts
         </ButtonLink>
       </header>
       <Panel className="p-4">
-        <p className="text-sm text-textMuted">
-          This is a placeholder artifact view for the initial scaffold. In a production flow this
-          page would render the full artifact content and revision history.
-        </p>
+        {artifact.content ? (
+          <article className="prose prose-sm max-w-none whitespace-pre-wrap text-text">
+            {artifact.content}
+          </article>
+        ) : (
+          <p className="text-sm text-textMuted">
+            This artifact does not have content yet. Generated workflow outputs will appear here.
+          </p>
+        )}
       </Panel>
     </div>
   )

@@ -44,14 +44,20 @@ describe('Verena SPA', () => {
 
     await user.click(await screen.findByRole('button', { name: /collapse navigation/i }))
 
-    expect(screen.getByRole('button', { name: /expand navigation/i })).toHaveAttribute('aria-expanded', 'false')
+    expect(screen.getByRole('button', { name: /expand navigation/i })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    )
     expect(screen.getByRole('link', { name: /^home$/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /^activities$/i })).toBeInTheDocument()
     expect(localStorage.getItem('verena-left-nav-collapsed')).toBe('true')
 
     await user.click(screen.getByRole('button', { name: /expand navigation/i }))
 
-    expect(screen.getByRole('button', { name: /collapse navigation/i })).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByRole('button', { name: /collapse navigation/i })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    )
     expect(localStorage.getItem('verena-left-nav-collapsed')).toBe('false')
   })
 
@@ -74,7 +80,9 @@ describe('Verena SPA', () => {
     renderRoute('/activities/session-persistence')
 
     const artifactsToggle = await screen.findByRole('button', { name: /artifacts/i })
-    const artifactsPanel = document.getElementById(artifactsToggle.getAttribute('aria-controls') ?? '')
+    const artifactsPanel = document.getElementById(
+      artifactsToggle.getAttribute('aria-controls') ?? '',
+    )
     const artifactLink = screen.getByRole('link', {
       name: /pr notes: onboarding-storage-user-scope/i,
     })
@@ -112,7 +120,9 @@ describe('Verena SPA', () => {
   test('composer submit appends a new message', async () => {
     const user = userEvent.setup()
     renderRoute('/activities/session-persistence')
-    const initialMessage = await screen.findByText(/manual multi-user browser repro is still pending/i)
+    const initialMessage = await screen.findByText(
+      /manual multi-user browser repro is still pending/i,
+    )
 
     expect(initialMessage.closest('article')).not.toHaveClass('chat-message-incoming')
 
@@ -126,10 +136,23 @@ describe('Verena SPA', () => {
     expect(assistantMessage.closest('article')).toHaveClass('chat-message-incoming')
   })
 
+  test('starts a RegProfile background task from chat', async () => {
+    const user = userEvent.setup()
+    renderRoute('/activities/session-persistence')
+
+    await user.type(await screen.findByLabelText(/company website url/i), 'https://example.com')
+    await user.click(screen.getByRole('button', { name: /start regprofile/i }))
+
+    expect(await screen.findByText(/https:\/\/example\.com/i)).toBeInTheDocument()
+    expect(screen.getByText(/regulatory profile/i)).toBeInTheDocument()
+  })
+
   test('shows a scroll-to-latest button when new messages arrive below the viewport', async () => {
     const user = userEvent.setup()
     renderRoute('/activities/session-persistence')
-    const initialMessage = await screen.findByText(/manual multi-user browser repro is still pending/i)
+    const initialMessage = await screen.findByText(
+      /manual multi-user browser repro is still pending/i,
+    )
     const scrollArea = initialMessage.closest('.scroll-area') as HTMLDivElement | null
 
     if (!scrollArea) {
@@ -156,7 +179,9 @@ describe('Verena SPA', () => {
       behavior: 'smooth',
     })
     await waitFor(() =>
-      expect(screen.queryByRole('button', { name: /scroll to latest messages/i })).not.toBeInTheDocument(),
+      expect(
+        screen.queryByRole('button', { name: /scroll to latest messages/i }),
+      ).not.toBeInTheDocument(),
     )
   })
 
