@@ -80,9 +80,14 @@ export const workflowListSchema = z.array(workflowSchema)
 
 const workflowQuestionSchema = z.object({
   id: z.string().optional(),
+  // The regprofile backend emits `prompt` (+ `kind`/`options`); older/mock
+  // payloads may use question/label/text. Keep them all so nothing is dropped.
+  prompt: z.string().optional(),
   question: z.string().optional(),
   label: z.string().optional(),
   text: z.string().optional(),
+  kind: z.enum(['single', 'multi', 'text']).optional(),
+  options: z.array(z.string()).optional(),
 })
 
 export const taskStatusSchema = z.enum([

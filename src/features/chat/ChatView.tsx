@@ -24,14 +24,7 @@ const isScrollAreaNearBottom = (element: HTMLDivElement) =>
   element.scrollHeight - element.scrollTop - element.clientHeight <= NEW_MESSAGE_SCROLL_THRESHOLD
 
 export function ChatView({ activityId }: ChatViewProps) {
-  const {
-    activities,
-    getMessagesByActivity,
-    sendMessage,
-    startRegProfile,
-    submitRegProfileAnswers,
-    tasks,
-  } = useAppState()
+  const { activities, getMessagesByActivity, sendMessage, startRegProfile } = useAppState()
   const activity = activities.find((item) => item.id === activityId)
   const modelsQuery = useModels()
   const workflowsQuery = useWorkflows()
@@ -46,7 +39,6 @@ export function ChatView({ activityId }: ChatViewProps) {
   )
   const [draft, setDraft] = useState('')
   const [websiteUrl, setWebsiteUrl] = useState('')
-  const [answers, setAnswers] = useState<Record<string, string>>({})
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [workflowError, setWorkflowError] = useState<string | null>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
@@ -147,11 +139,6 @@ export function ChatView({ activityId }: ChatViewProps) {
     setSubmitError(null)
   }
 
-  const waitingTask = tasks.find(
-    (task) =>
-      task.activityId === activityId && task.status === 'waiting_for_answers' && task.executionId,
-  )
-
   const onStartRegProfile = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const url = websiteUrl.trim()
@@ -165,20 +152,6 @@ export function ChatView({ activityId }: ChatViewProps) {
       setWorkflowError(null)
     } catch (error) {
       setWorkflowError(error instanceof Error ? error.message : 'Unable to start workflow.')
-    }
-  }
-
-  const onSubmitAnswers = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    if (!waitingTask?.executionId) {
-      return
-    }
-    try {
-      await submitRegProfileAnswers(waitingTask.executionId, answers)
-      setAnswers({})
-      setWorkflowError(null)
-    } catch (error) {
-      setWorkflowError(error instanceof Error ? error.message : 'Unable to submit answers.')
     }
   }
 
@@ -225,47 +198,6 @@ export function ChatView({ activityId }: ChatViewProps) {
             Start RegProfile
           </Button>
         </form>
-
-        {waitingTask?.questions?.length ? (
-          <form
-            className="mt-3 space-y-3 rounded-xl bg-surfaceContainer p-3"
-            onSubmit={onSubmitAnswers}
-          >
-            <div>
-              <p className="text-body-md font-medium text-text">RegProfile needs clarification</p>
-              <p className="text-label-md text-textMuted">
-                Answer the questions to continue the Temporal workflow.
-              </p>
-            </div>
-            {waitingTask.questions.map((question, index) => {
-              const key = question.id || `question-${index}`
-              const label =
-                question.question || question.label || question.text || `Question ${index + 1}`
-              return (
-                <div key={key} className="space-y-1">
-                  <label htmlFor={`answer-${key}`} className="text-label-md font-medium text-text">
-                    {label}
-                  </label>
-                  <textarea
-                    id={`answer-${key}`}
-                    value={answers[key] ?? ''}
-                    onChange={(event) =>
-                      setAnswers((current) => ({
-                        ...current,
-                        [key]: event.target.value,
-                      }))
-                    }
-                    rows={2}
-                    className="focus-brand w-full rounded-xl border border-[color:var(--surface-border)] bg-surfaceContainerLow px-3 py-2 text-body-md text-text"
-                  />
-                </div>
-              )
-            })}
-            <Button type="submit" variant="primary" size="sm">
-              Submit answers
-            </Button>
-          </form>
-        ) : null}
 
         {workflowError ? (
           <p className="mt-2 text-sm text-error" role="alert">

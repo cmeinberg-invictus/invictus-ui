@@ -113,6 +113,22 @@ describe('Verena SPA (authenticated)', () => {
     expect(await screen.findAllByText(/https:\/\/example\.com/i)).not.toHaveLength(0)
   })
 
+  test('a ready regprofile run asks its clarification question in the chat thread', async () => {
+    const user = userEvent.setup()
+    renderRoute('/activities/7')
+
+    await user.type(await screen.findByLabelText(/company website url/i), 'https://example.com')
+    await user.click(screen.getByRole('button', { name: /start regprofile/i }))
+
+    // The run starts as "running"; the status poll advances it to
+    // "waiting_for_answers", which kicks off a conversational turn where the
+    // assistant asks the question as a chat message (no separate form).
+    expect(
+      await screen.findByText(/what is your licensing status/i, undefined, { timeout: 5000 }),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /submit answers/i })).not.toBeInTheDocument()
+  })
+
   test('renders artifact markdown content', async () => {
     renderRoute('/artifacts/11')
 

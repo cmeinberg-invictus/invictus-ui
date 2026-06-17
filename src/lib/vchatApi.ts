@@ -107,6 +107,16 @@ export const updateConversation = async (
   return toActivity(conversation)
 }
 
+export const fetchRegProfileStatus = async (
+  request: Requester,
+  executionId: string,
+): Promise<BackgroundTask> => {
+  const execution = workflowExecutionSchema.parse(
+    await request(`/workflow-runs/${executionId}/status/`),
+  )
+  return toBackgroundTask(execution)
+}
+
 export const startRegProfileWorkflow = async (
   request: Requester,
   activityId: string,

@@ -43,6 +43,14 @@ export type BackgroundTask = {
   subtitle: string
   updatedAt: string
   executionId?: string
-  questions?: Array<{ id?: string; question?: string; label?: string; text?: string }>
+  questions?: Array<{
+    id?: string
+    prompt?: string
+    question?: string
+    label?: string
+    text?: string
+    kind?: 'single' | 'multi' | 'text'
+    options?: string[]
+  }>
   error?: string
 }

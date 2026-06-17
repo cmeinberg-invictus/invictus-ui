@@ -117,6 +117,28 @@ export function installBackendMock() {
       state.startedRuns.push(run)
       return json(run, 201)
     }
+    if (/^\/workflow-runs\/\d+\/status\/$/.test(path) && method === 'GET') {
+      return json({
+        id: 55,
+        conversation: 7,
+        external_workflow_id: 'wf-55',
+        execution_type: 'regulatory_profile',
+        status: 'waiting_for_answers',
+        website_url: 'https://example.com',
+        status_payload: {
+          questions: [
+            {
+              id: 'licensing',
+              prompt: 'How does the company provide its banking services?',
+              kind: 'single',
+              options: ['Own licenses', 'Partner bank'],
+            },
+          ],
+        },
+        error: '',
+        updated_at: iso,
+      })
+    }
     if (path === '/workflow-artifacts/') return json(fixtures.artifacts)
     if (path === '/models/') return json(fixtures.models)
     if (path === '/skills/') return json(fixtures.skills)
@@ -154,12 +176,22 @@ class MockWebSocket {
 
   removeEventListener() {}
 
-  send() {
+  send(raw?: string) {
+    let payload: Record<string, unknown>
+    try {
+      payload = raw ? JSON.parse(raw) : {}
+    } catch {
+      payload = {}
+    }
+    // A clarification kickoff makes the assistant ask its first question.
+    const content = payload.workflow_kickoff
+      ? 'To finish your profile: what is your licensing status?'
+      : 'Streamed reply'
     this.emit('message', { data: JSON.stringify({ type: 'token', token: 'Streamed ' }) })
     this.emit('message', {
       data: JSON.stringify({
         type: 'done',
-        message: { id: 999, role: 'assistant', content: 'Streamed reply', created_at: iso },
+        message: { id: 999, role: 'assistant', content, created_at: iso },
       }),
     })
   }

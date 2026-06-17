@@ -91,9 +91,11 @@ export function RightPanel({ activityId, onClose }: RightPanelProps) {
   const contextualTasks = activityId
     ? tasks.filter((task) => task.activityId === activityId)
     : tasks
-  const waitingTasks = contextualTasks.filter((task) => task.status === 'waiting_for_answers')
   const activeTasks = contextualTasks.filter(
-    (task) => task.status === 'running' || task.status === 'queued',
+    (task) =>
+      task.status === 'running' ||
+      task.status === 'queued' ||
+      task.status === 'waiting_for_answers',
   )
   const [openGroups, setOpenGroups] = useState<Record<ContextGroupId, boolean>>({
     backgroundTasks: true,
@@ -179,27 +181,31 @@ export function RightPanel({ activityId, onClose }: RightPanelProps) {
           onToggle={toggleGroup}
         >
           <div className="space-y-2">
-            {waitingTasks.map((task) => (
-              <Card key={`waiting-${task.id}`} variant="followUp" className="space-y-1 p-3">
-                <p className="type-label text-label-md font-medium">Follow up</p>
-                <p className="text-body-md">
-                  {task.title} needs {task.questions?.length || 'a few'} clarification answer
-                  {task.questions && task.questions.length === 1 ? '' : 's'} to continue.
-                </p>
-              </Card>
-            ))}
-            {activeTasks.map((task) => (
-              <Card key={`active-${task.id}`} variant="reasoning" className="space-y-2 p-3">
-                <p className="type-label text-label-md font-medium">In progress</p>
-                <p className="text-body-md font-medium">{task.title}</p>
-                {task.subtitle ? <p className="text-label-md">{task.subtitle}</p> : null}
-                <div className="flex items-center gap-2 text-label-md">
-                  <Icon name="clock" className="h-3.5 w-3.5" />
-                  Updated {task.updatedAt}
-                </div>
-              </Card>
-            ))}
-            {!waitingTasks.length && !activeTasks.length ? (
+            {activeTasks.map((task) => {
+              const isWaiting = task.status === 'waiting_for_answers'
+              return (
+                <Card
+                  key={`active-${task.id}`}
+                  variant={isWaiting ? 'followUp' : 'reasoning'}
+                  className="space-y-2 p-3"
+                >
+                  <p className="type-label text-label-md font-medium">
+                    {isWaiting ? 'Needs your answers' : 'In progress'}
+                  </p>
+                  <p className="text-body-md font-medium">{task.title}</p>
+                  {isWaiting ? (
+                    <p className="text-label-md">Answer the questions in the chat to continue.</p>
+                  ) : task.subtitle ? (
+                    <p className="text-label-md">{task.subtitle}</p>
+                  ) : null}
+                  <div className="flex items-center gap-2 text-label-md">
+                    <Icon name="clock" className="h-3.5 w-3.5" />
+                    Updated {task.updatedAt}
+                  </div>
+                </Card>
+              )
+            })}
+            {!activeTasks.length ? (
               <p className="px-1 py-2 text-label-md text-textMuted">
                 No recommended actions right now.
               </p>
