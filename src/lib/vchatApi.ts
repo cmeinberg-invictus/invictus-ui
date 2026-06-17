@@ -1,55 +1,31 @@
-import type { Activity, Artifact, BackgroundTask, Message, TaskStatus } from '../types/domain'
-
-const apiBaseUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api'
-const wsBaseUrl = import.meta.env.VITE_WS_URL ?? 'ws://localhost:8000/ws'
-const authToken = import.meta.env.VITE_AUTH_TOKEN ?? ''
-
-export const isVchatApiEnabled = Boolean(authToken)
-
-type VchatConversation = {
-  id: number
-  title: string
-  model_name: string
-  created_at: string
-  updated_at: string
-}
-
-type VchatMessage = {
-  id: number
-  conversation: number
-  role: Message['role']
-  content: string
-  created_at: string
-}
-
-type VchatWorkflowExecution = {
-  id: number
-  conversation: number
-  external_workflow_id: string
-  execution_type: string
-  status: TaskStatus
-  website_url: string
-  status_payload: {
-    questions?: BackgroundTask['questions']
-    error?: string | null
-  }
-  error: string
-  updated_at: string
-}
-
-type VchatArtifact = {
-  id: number
-  conversation: number
-  title: string
-  artifact_type: Artifact['type']
-  content: string
-  updated_at: string
-}
+import type { Requester } from './auth'
+import { WS_BASE_URL } from './config'
+import {
+  conversationListSchema,
+  conversationSchema,
+  messageListSchema,
+  modelConfigListSchema,
+  skillListSchema,
+  userSchema,
+  workflowArtifactListSchema,
+  workflowExecutionListSchema,
+  workflowExecutionSchema,
+  workflowListSchema,
+  type ModelConfig,
+  type Skill,
+  type VchatArtifact,
+  type VchatConversation,
+  type VchatMessage,
+  type VchatUser,
+  type VchatWorkflowExecution,
+  type Workflow,
+} from './schemas'
+import type { Activity, Artifact, BackgroundTask, CurrentUser, Message } from '../types/domain'
 
 export type WorkflowEventPayload = {
   execution_id: number
   execution_type: string
-  status: TaskStatus
+  status: BackgroundTask['status']
   title: string
   subtitle: string
   questions?: BackgroundTask['questions']
@@ -57,73 +33,113 @@ export type WorkflowEventPayload = {
   updated_at: string
 }
 
-const request = async <T>(path: string, init: RequestInit = {}): Promise<T> => {
-  const response = await fetch(`${apiBaseUrl}${path}`, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${authToken}`,
-      ...init.headers,
-    },
-  })
+// --- Reads ---------------------------------------------------------------
 
-  if (!response.ok) {
-    throw new Error(`vchat API request failed: ${response.status}`)
-  }
-
-  return (await response.json()) as T
+export const fetchCurrentUser = async (request: Requester): Promise<CurrentUser> => {
+  const user = userSchema.parse(await request('/auth/me/'))
+  return toCurrentUser(user)
 }
 
-export const fetchActivities = async (): Promise<Activity[]> => {
-  const conversations = await request<VchatConversation[]>('/conversations/')
+export const fetchActivities = async (request: Requester): Promise<Activity[]> => {
+  const conversations = conversationListSchema.parse(await request('/conversations/'))
   return conversations.map(toActivity)
 }
 
-export const fetchMessages = async (activityId: string): Promise<Message[]> => {
-  const messages = await request<VchatMessage[]>(`/conversations/${activityId}/messages/`)
+export const fetchMessages = async (
+  request: Requester,
+  activityId: string,
+): Promise<Message[]> => {
+  const messages = messageListSchema.parse(
+    await request(`/conversations/${activityId}/messages/`),
+  )
   return messages.map(toMessage)
 }
 
-export const fetchTasks = async (): Promise<BackgroundTask[]> => {
-  const executions = await request<VchatWorkflowExecution[]>('/workflow-runs/')
+export const fetchTasks = async (request: Requester): Promise<BackgroundTask[]> => {
+  const executions = workflowExecutionListSchema.parse(await request('/workflow-runs/'))
   return executions.map(toBackgroundTask)
 }
 
-export const fetchArtifacts = async (): Promise<Artifact[]> => {
-  const artifacts = await request<VchatArtifact[]>('/workflow-artifacts/')
+export const fetchArtifacts = async (request: Requester): Promise<Artifact[]> => {
+  const artifacts = workflowArtifactListSchema.parse(await request('/workflow-artifacts/'))
   return artifacts.map(toArtifact)
 }
 
+export const fetchModels = async (request: Requester): Promise<ModelConfig[]> =>
+  modelConfigListSchema.parse(await request('/models/'))
+
+export const fetchSkills = async (request: Requester): Promise<Skill[]> =>
+  skillListSchema.parse(await request('/skills/'))
+
+export const fetchWorkflows = async (request: Requester): Promise<Workflow[]> =>
+  workflowListSchema.parse(await request('/workflows/'))
+
+// --- Writes --------------------------------------------------------------
+
+export const createConversation = async (
+  request: Requester,
+  payload: {
+    title: string
+    model_name?: string
+    skill_names?: string[]
+    workflow_name?: string
+  },
+): Promise<Activity> => {
+  const conversation = conversationSchema.parse(
+    await request('/conversations/', { method: 'POST', body: payload }),
+  )
+  return toActivity(conversation)
+}
+
+export const updateConversation = async (
+  request: Requester,
+  activityId: string,
+  payload: Partial<{
+    title: string
+    model_name: string
+    skill_names: string[]
+    workflow_name: string
+  }>,
+): Promise<Activity> => {
+  const conversation = conversationSchema.parse(
+    await request(`/conversations/${activityId}/`, { method: 'PATCH', body: payload }),
+  )
+  return toActivity(conversation)
+}
+
 export const startRegProfileWorkflow = async (
+  request: Requester,
   activityId: string,
   websiteUrl: string,
 ): Promise<BackgroundTask> => {
-  const execution = await request<VchatWorkflowExecution>('/workflow-runs/', {
-    method: 'POST',
-    body: JSON.stringify({
-      conversation: Number(activityId),
-      website_url: websiteUrl,
-    }),
-  })
-  return toBackgroundTask(execution)
-}
-
-export const submitRegProfileAnswers = async (
-  executionId: string,
-  answers: Record<string, string>,
-): Promise<BackgroundTask> => {
-  const execution = await request<VchatWorkflowExecution>(
-    `/workflow-runs/${executionId}/answers/`,
-    {
+  const execution = workflowExecutionSchema.parse(
+    await request('/workflow-runs/', {
       method: 'POST',
-      body: JSON.stringify({ answers }),
-    },
+      body: { conversation: Number(activityId), website_url: websiteUrl },
+    }),
   )
   return toBackgroundTask(execution)
 }
 
+export const submitRegProfileAnswers = async (
+  request: Requester,
+  executionId: string,
+  answers: Record<string, string>,
+): Promise<BackgroundTask> => {
+  const execution = workflowExecutionSchema.parse(
+    await request(`/workflow-runs/${executionId}/answers/`, {
+      method: 'POST',
+      body: { answers },
+    }),
+  )
+  return toBackgroundTask(execution)
+}
+
+// --- WebSocket -----------------------------------------------------------
+
 export const openChatSocket = (
   activityId: string,
+  token: string,
   handlers: {
     onToken: (token: string) => void
     onDone: (message: Message) => void
@@ -132,21 +148,27 @@ export const openChatSocket = (
   },
 ) => {
   const socket = new WebSocket(
-    `${wsBaseUrl}/chat/${activityId}/?token=${encodeURIComponent(authToken)}`,
+    `${WS_BASE_URL}/chat/${activityId}/?token=${encodeURIComponent(token)}`,
   )
 
   socket.addEventListener('message', (event) => {
-    const payload = JSON.parse(event.data)
+    let payload: Record<string, unknown>
+    try {
+      payload = JSON.parse(event.data)
+    } catch {
+      handlers.onError('Invalid websocket payload.')
+      return
+    }
     if (payload.type === 'token') {
       handlers.onToken(String(payload.token ?? ''))
       return
     }
     if (payload.type === 'done' && payload.message) {
-      handlers.onDone(toSocketMessage(payload.message, activityId))
+      handlers.onDone(toSocketMessage(payload.message as Record<string, unknown>, activityId))
       return
     }
     if (payload.type === 'background_task') {
-      handlers.onTask(toBackgroundTaskEvent(payload, activityId))
+      handlers.onTask(toBackgroundTaskEvent(payload as unknown as WorkflowEventPayload, activityId))
       return
     }
     if (payload.type === 'error') {
@@ -154,14 +176,29 @@ export const openChatSocket = (
     }
   })
 
+  socket.addEventListener('error', () => {
+    handlers.onError('WebSocket connection error.')
+  })
+
   return socket
 }
+
+// --- Mappers (vchat backend -> invictus domain) --------------------------
+
+const toCurrentUser = (user: VchatUser): CurrentUser => ({
+  id: String(user.id),
+  email: user.email,
+  name: nameFromEmail(user.email),
+})
 
 const toActivity = (conversation: VchatConversation): Activity => ({
   id: String(conversation.id),
   title: conversation.title || `Conversation ${conversation.id}`,
   excerpt: conversation.model_name ? `Model: ${conversation.model_name}` : 'Chat activity',
   updatedAt: formatDate(conversation.updated_at),
+  modelName: conversation.model_name || undefined,
+  skillNames: conversation.skill_names,
+  workflowName: conversation.workflow_name || undefined,
 })
 
 const toMessage = (message: VchatMessage): Message => ({
@@ -173,7 +210,7 @@ const toMessage = (message: VchatMessage): Message => ({
 })
 
 const toSocketMessage = (message: Record<string, unknown>, activityId: string): Message => ({
-  id: String(message.id ?? `${Date.now()}-assistant`),
+  id: String(message.id ?? `${activityId}-assistant-${message.created_at ?? ''}`),
   activityId,
   role: String(message.role ?? 'assistant') as Message['role'],
   content: String(message.content ?? ''),
@@ -216,8 +253,28 @@ const toArtifact = (artifact: VchatArtifact): Artifact => ({
   content: artifact.content,
 })
 
-const formatDate = (value: string) =>
-  new Intl.DateTimeFormat([], { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value))
+const nameFromEmail = (email: string) => {
+  const handle = email.split('@')[0] ?? email
+  return handle
+    .split(/[._-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+    || email
+}
 
-const formatTime = (value: string) =>
-  new Intl.DateTimeFormat([], { hour: '2-digit', minute: '2-digit' }).format(new Date(value))
+const formatDate = (value: string) => {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) {
+    return value
+  }
+  return new Intl.DateTimeFormat([], { dateStyle: 'medium', timeStyle: 'short' }).format(date)
+}
+
+const formatTime = (value: string) => {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) {
+    return value
+  }
+  return new Intl.DateTimeFormat([], { hour: '2-digit', minute: '2-digit' }).format(date)
+}

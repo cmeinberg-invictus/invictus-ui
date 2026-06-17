@@ -4,8 +4,10 @@ import { Button } from '../../components/ui/Button'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { Icon } from '../../components/ui/Icon'
 import { IconButton } from '../../components/ui/IconButton'
+import { Markdown } from '../../components/ui/Markdown'
 import { Panel } from '../../components/ui/Panel'
 import { cn } from '../../lib/cn'
+import { useModels, useUpdateConversation, useWorkflows } from '../../lib/queries'
 import { useAppState } from '../../store/AppStateProvider'
 import type { Message } from '../../types/domain'
 
@@ -15,12 +17,29 @@ type ChatViewProps = {
 
 const NEW_MESSAGE_SCROLL_THRESHOLD = 48
 
+const selectClassName =
+  'focus-brand h-9 min-w-0 rounded-pill border border-[color:var(--surface-border)] bg-surfaceContainer px-3 text-label-lg text-text'
+
 const isScrollAreaNearBottom = (element: HTMLDivElement) =>
   element.scrollHeight - element.scrollTop - element.clientHeight <= NEW_MESSAGE_SCROLL_THRESHOLD
 
 export function ChatView({ activityId }: ChatViewProps) {
-  const { getMessagesByActivity, sendMessage, startRegProfile, submitRegProfileAnswers, tasks } =
-    useAppState()
+  const {
+    activities,
+    getMessagesByActivity,
+    sendMessage,
+    startRegProfile,
+    submitRegProfileAnswers,
+    tasks,
+  } = useAppState()
+  const activity = activities.find((item) => item.id === activityId)
+  const modelsQuery = useModels()
+  const workflowsQuery = useWorkflows()
+  const updateConversation = useUpdateConversation(activityId)
+  const models = modelsQuery.data ?? []
+  const workflows = workflowsQuery.data ?? []
+  const selectedModel = activity?.modelName ?? ''
+  const selectedWorkflow = activity?.workflowName ?? ''
   const messages = useMemo(
     () => getMessagesByActivity(activityId),
     [activityId, getMessagesByActivity],
@@ -120,7 +139,10 @@ export function ChatView({ activityId }: ChatViewProps) {
       return
     }
 
-    sendMessage(activityId, content)
+    sendMessage(activityId, content, {
+      modelName: selectedModel || undefined,
+      workflowName: selectedWorkflow || undefined,
+    })
     setDraft('')
     setSubmitError(null)
   }
@@ -265,14 +287,49 @@ export function ChatView({ activityId }: ChatViewProps) {
       ) : null}
 
       <form className="relative z-20 shrink-0 px-3 pb-4 pt-2" onSubmit={onSubmit}>
+        <div className="mb-2 flex flex-wrap items-center gap-2">
+          <label htmlFor="chat-model" className="sr-only">
+            Model
+          </label>
+          <select
+            id="chat-model"
+            className={selectClassName}
+            value={selectedModel}
+            disabled={updateConversation.isPending}
+            onChange={(event) => updateConversation.mutate({ model_name: event.target.value })}
+          >
+            {!selectedModel ? <option value="">Default model</option> : null}
+            {models.map((model) => (
+              <option key={model.id} value={model.model_name}>
+                {model.display_name}
+              </option>
+            ))}
+          </select>
+
+          <label htmlFor="chat-workflow" className="sr-only">
+            Workflow
+          </label>
+          <select
+            id="chat-workflow"
+            className={selectClassName}
+            value={selectedWorkflow}
+            disabled={updateConversation.isPending}
+            onChange={(event) => updateConversation.mutate({ workflow_name: event.target.value })}
+          >
+            <option value="">No workflow</option>
+            {workflows.map((workflow) => (
+              <option key={workflow.id} value={workflow.name}>
+                {workflow.display_name}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <label htmlFor="chat-input" className="sr-only">
           Message
         </label>
 
         <div className="composer-surface flex items-center gap-2 rounded-xl p-2">
-          <IconButton variant="outlined" size="sm" aria-label="Add attachment">
-            <Icon name="plus" className="h-4 w-4" />
-          </IconButton>
           <textarea
             id="chat-input"
             name="message"
@@ -321,7 +378,7 @@ function MessageBubble({ message, isIncoming }: MessageBubbleProps) {
       >
         <Avatar name="Verena" variant="agent" size="chat" />
         <div className="message-assistant rounded-bl-sm rounded-br-xl rounded-tl-xl rounded-tr-xl px-4 py-3">
-          <p className="text-base leading-6 text-text">{message.content}</p>
+          <Markdown content={message.content} />
           <p className="mt-1 text-xs text-textMuted">{message.timestamp}</p>
         </div>
       </article>

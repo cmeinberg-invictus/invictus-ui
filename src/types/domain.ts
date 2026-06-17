@@ -5,6 +5,15 @@ export type Activity = {
   title: string
   updatedAt: string
   excerpt: string
+  modelName?: string
+  skillNames?: string[]
+  workflowName?: string
+}
+
+export type CurrentUser = {
+  id: string
+  email: string
+  name: string
 }
 
 export type Artifact = {

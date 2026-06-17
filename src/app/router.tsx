@@ -1,6 +1,8 @@
 import {
   createBrowserRouter,
   createMemoryRouter,
+  Navigate,
+  Outlet,
   type InitialEntry,
   type RouteObject,
 } from 'react-router-dom'
@@ -10,21 +12,37 @@ import { ActivityConversationPage } from '../pages/ActivityConversationPage'
 import { ArtifactDetailPage } from '../pages/ArtifactDetailPage'
 import { ArtifactsPage } from '../pages/ArtifactsPage'
 import { HomePage } from '../pages/HomePage'
+import { LoginPage } from '../pages/LoginPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
 import { SettingsPage } from '../pages/SettingsPage'
+import { useAuth } from '../lib/auth'
+
+function RequireAuth() {
+  const { isAuthenticated } = useAuth()
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
+  }
+  return <Outlet />
+}
 
 export const appRoutes: RouteObject[] = [
+  { path: '/login', element: <LoginPage /> },
   {
-    path: '/',
-    element: <AppShell />,
+    element: <RequireAuth />,
     children: [
-      { index: true, element: <HomePage /> },
-      { path: 'activities', element: <ActivitiesPage /> },
-      { path: 'activities/:activityId', element: <ActivityConversationPage /> },
-      { path: 'artifacts', element: <ArtifactsPage /> },
-      { path: 'artifacts/:artifactId', element: <ArtifactDetailPage /> },
-      { path: 'settings', element: <SettingsPage /> },
-      { path: '*', element: <NotFoundPage /> },
+      {
+        path: '/',
+        element: <AppShell />,
+        children: [
+          { index: true, element: <HomePage /> },
+          { path: 'activities', element: <ActivitiesPage /> },
+          { path: 'activities/:activityId', element: <ActivityConversationPage /> },
+          { path: 'artifacts', element: <ArtifactsPage /> },
+          { path: 'artifacts/:artifactId', element: <ArtifactDetailPage /> },
+          { path: 'settings', element: <SettingsPage /> },
+          { path: '*', element: <NotFoundPage /> },
+        ],
+      },
     ],
   },
 ]

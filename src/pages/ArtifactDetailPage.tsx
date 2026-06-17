@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { ButtonLink } from '../components/ui/ButtonLink'
 import { EmptyState } from '../components/ui/EmptyState'
+import { Markdown } from '../components/ui/Markdown'
 import { Panel } from '../components/ui/Panel'
 import { useAppState } from '../store/AppStateProvider'
 
@@ -30,9 +31,7 @@ export function ArtifactDetailPage() {
       </header>
       <Panel className="p-4">
         {artifact.content ? (
-          <article className="prose prose-sm max-w-none whitespace-pre-wrap text-text">
-            {artifact.content}
-          </article>
+          <Markdown content={artifact.content} />
         ) : (
           <p className="text-sm text-textMuted">
             This artifact does not have content yet. Generated workflow outputs will appear here.
